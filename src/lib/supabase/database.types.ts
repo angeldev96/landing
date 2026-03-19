@@ -155,6 +155,13 @@ export type Database = {
         Args: never;
         Returns: Json;
       };
+      get_crochet_landing_gallery_page: {
+        Args: {
+          input_page?: number;
+          input_page_size?: number;
+        };
+        Returns: Json;
+      };
       get_crochet_landing_gallery: {
         Args: never;
         Returns: {
@@ -166,6 +173,12 @@ export type Database = {
           name: string;
           slug: string;
         }[];
+      };
+      get_crochet_landing_product_detail: {
+        Args: {
+          input_slug: string;
+        };
+        Returns: Json;
       };
       set_crochet_landing_cover_image: {
         Args: { input_image_id: string };

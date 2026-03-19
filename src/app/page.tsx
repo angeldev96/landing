@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { buildStoragePublicUrl } from "@/lib/crochet-landing";
@@ -253,15 +254,19 @@ export default async function Home() {
                 Nuestras Creaciones
               </h3>
             </div>
-            <a href="#" className="text-primary-dark text-sm font-bold hover:underline underline-offset-4 transition-all">
+            <Link
+              href="/galeria"
+              className="text-primary-dark text-sm font-bold hover:underline underline-offset-4 transition-all"
+            >
               Ver todo →
-            </a>
+            </Link>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
             {products.map((product, i) => (
-              <div
+              <Link
                 key={product.name}
+                href="/galeria"
                 className={`group relative aspect-square rounded-2xl lg:rounded-3xl overflow-hidden bg-surface shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-500 animate-scale-in`}
                 style={{ animationDelay: `${(i + 1) * 100}ms` }}
               >
@@ -280,8 +285,16 @@ export default async function Home() {
                     {product.name}
                   </span>
                 </div>
-              </div>
+              </Link>
             ))}
+          </div>
+          <div className="mt-8 flex justify-center lg:mt-10">
+            <Link
+              href="/galeria"
+              className="rounded-full border border-primary/30 bg-surface px-7 py-3 text-sm font-bold text-foreground transition hover:bg-primary/10"
+            >
+              Explorar galeria completa
+            </Link>
           </div>
         </div>
       </section>

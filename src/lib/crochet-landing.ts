@@ -12,6 +12,37 @@ export type GalleryProduct = {
   coverAlt: string | null;
 };
 
+export type GalleryPageProduct = GalleryProduct & {
+  sortOrder: number;
+  imageCount: number;
+};
+
+export type GalleryPageData = {
+  page: number;
+  pageSize: number;
+  totalProducts: number;
+  totalPages: number;
+  items: GalleryPageProduct[];
+};
+
+export type ProductDetailImage = {
+  id: string;
+  storagePath: string;
+  altText: string | null;
+  sortOrder: number;
+  isCover: boolean;
+};
+
+export type ProductDetail = {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  badge: string | null;
+  sortOrder: number;
+  images: ProductDetailImage[];
+};
+
 export type AdminProductImage = {
   id: string;
   storage_path: string;
@@ -127,4 +158,80 @@ export function parseGalleryProducts(items: Awaited<GalleryProduct[]>) {
     imageUrl: buildStoragePublicUrl(item.coverPath),
     imageAlt: item.coverAlt || item.name,
   }));
+}
+
+export function parseGalleryPageData(input: Json): GalleryPageData {
+  if (!isJsonRecord(input)) {
+    return {
+      page: 1,
+      pageSize: 8,
+      totalProducts: 0,
+      totalPages: 1,
+      items: [],
+    };
+  }
+
+  const items = Array.isArray(input.items)
+    ? input.items
+        .map((item) => {
+          if (!isJsonRecord(item)) {
+            return null;
+          }
+
+          return {
+            id: asString(item.id),
+            slug: asString(item.slug),
+            name: asString(item.name),
+            description: asNullableString(item.description),
+            badge: asNullableString(item.badge),
+            coverPath: asNullableString(item.cover_path),
+            coverAlt: asNullableString(item.cover_alt),
+            sortOrder: asNumber(item.sort_order),
+            imageCount: asNumber(item.image_count),
+          } satisfies GalleryPageProduct;
+        })
+        .filter((item): item is GalleryPageProduct => Boolean(item?.id))
+    : [];
+
+  return {
+    page: asNumber(input.page, 1),
+    pageSize: asNumber(input.page_size, 8),
+    totalProducts: asNumber(input.total_products),
+    totalPages: asNumber(input.total_pages, 1),
+    items,
+  };
+}
+
+export function parseProductDetail(input: Json): ProductDetail | null {
+  if (!isJsonRecord(input) || !asString(input.id)) {
+    return null;
+  }
+
+  const images = Array.isArray(input.images)
+    ? input.images
+        .map((image) => {
+          if (!isJsonRecord(image)) {
+            return null;
+          }
+
+          return {
+            id: asString(image.id),
+            storagePath: asString(image.storage_path),
+            altText: asNullableString(image.alt_text),
+            sortOrder: asNumber(image.sort_order),
+            isCover: asBoolean(image.is_cover),
+          } satisfies ProductDetailImage;
+        })
+        .filter((image): image is ProductDetailImage => Boolean(image?.id))
+    : [];
+
+  return {
+    id: asString(input.id),
+    slug: asString(input.slug),
+    name: asString(input.name),
+    description: asNullableString(input.description),
+    badge: asNullableString(input.badge),
+    sortOrder: asNumber(input.sort_order),
+    images,
+  };
 }
