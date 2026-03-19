@@ -1,7 +1,9 @@
 import Image from "next/image";
+import { createClient } from "@/lib/supabase/server";
+import { buildStoragePublicUrl } from "@/lib/crochet-landing";
 
 /* ─── Product Data ─── */
-const products = [
+const fallbackProducts = [
   {
     src: "https://lh3.googleusercontent.com/aida-public/AB6AXuAMpHDTmSNzyAZdcjQhOjazwz-w2Afr3UCUfFx9S2BudTfzTaefWQBxR0x0rCMwx1vy_-7RkQiOxQgJo4WmGlX4-Ar8f6EZB0Gk0bJ4hEZKEmBB7eb3h4zj5KBjoAlRVda6yPARRU04x5ddPidFwax8MMUpWqhZKt8tehNF4ARQ39KQP2T1z9nLG67UV58iHx-N0cz9YlzhWSN8hZwhssQwPQF0k-0kmWBzvyqz34hluHk-EAA8reyfxNymCF9wlAd5A64HRqy3HA",
     alt: "Pop Style Star amigurumi",
@@ -27,6 +29,22 @@ const products = [
     name: "Flores Eternas",
   },
 ];
+
+async function getLandingProducts() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_crochet_landing_gallery");
+
+  if (error || !data?.length) {
+    return fallbackProducts;
+  }
+
+  return data.map((product) => ({
+    src: buildStoragePublicUrl(product.cover_path) || fallbackProducts[0]?.src,
+    alt: product.cover_alt || product.name,
+    tag: product.badge || "Nuevo",
+    name: product.name,
+  }));
+}
 
 const steps = [
   {
@@ -80,7 +98,9 @@ function YarnBall({ className }: { className?: string }) {
 }
 
 /* ─── Page ─── */
-export default function Home() {
+export default async function Home() {
+  const products = await getLandingProducts();
+
   return (
     <div className="relative min-h-screen bg-background grain-overlay">
       {/* ─── HEADER ─── */}
