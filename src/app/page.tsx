@@ -16,9 +16,9 @@ const products = [
   },
   {
     src: "https://lh3.googleusercontent.com/aida-public/AB6AXuAjsz4o5X71MIq4j5lzcjKnk9DY1R5y25QV6nVSw0uwv9Mlcj3NiwSQa_cwwOTdZHzWar0yq8uvLJ2sgF5BIOM1_c0F2gQ72Dt5PzXOynk88RAguqb1CaSEyiT4ugwE6_R6D9X6vW5XONNTrhsOwcBDjw9Lsav57VkYNkKmDgvAk-1W0MDRBsuThjYyHzytGWu9W0xdWpwL3XGmLNjr9Zei1p0FjxppgRoUq28f8BhjJa3aQJPHB5lCzdZ3Pz9VyDxu7JtZ-NDkYg",
-    alt: "Muñeca personalizada crochet",
+    alt: "Muneca personalizada crochet",
     tag: "Custom",
-    name: "Muñeca Personalizada",
+    name: "Muneca Personalizada",
   },
   {
     src: "https://lh3.googleusercontent.com/aida-public/AB6AXuCaNRG3XeoMVcYODhOhzOk1Kep9xN68dcOse_KbyNZ7-ORH_UpoIN0n3pMfsY8C-fXYdZ7hLQ5mrE6pXivsoq8JOTb3rxZjLGYu8K7rZbmtQbzNor32bIabohwDKUQPHTFV0oUyiUrDqqhrMNw5pwPIjqFVE-HBkpzUHhv0S9ccYABuqDLZEbwfaMA-FLwPLb7F2axMkWgCcs3E0PJWlMDJKgBPkUV82JxiaO65_LNN0sInNRfhu5KZPuJ7HOHfZqvIzi5uUJnEXg",
@@ -31,18 +31,18 @@ const products = [
 const steps = [
   {
     num: "01",
-    title: "Elige tu diseño",
-    desc: "Enviame una foto o referencia por Instagram de lo que te gustaría que tejiera. Cualquier idea puede convertirse en hilo.",
+    title: "Elige tu diseno",
+    desc: "Enviame una foto o referencia por Instagram de lo que te gustaria que tejiera. Cualquier idea puede convertirse en hilo.",
   },
   {
     num: "02",
-    title: "Presupuesto y Seña",
-    desc: "Acordamos detalles, tamaño, colores y precio. Se reserva con un pequeño adelanto.",
+    title: "Presupuesto y Senia",
+    desc: "Acordamos detalles, tamano, colores y precio. Se reserva con un pequeno adelanto.",
   },
   {
     num: "03",
-    title: "¡Magia lista!",
-    desc: "Te aviso cuando tu pedido esté terminado para ser entregado o enviado a donde quieras.",
+    title: "Magia lista",
+    desc: "Te aviso cuando tu pedido este terminado para ser entregado o enviado a donde quieras.",
   },
 ];
 
@@ -93,6 +93,7 @@ export default function Home() {
                 src="/android-chrome-512x512.png"
                 alt="Logo Crochet CasRey"
                 fill
+                  sizes="40px"
                 className="object-cover"
               />
             </div>
@@ -103,10 +104,10 @@ export default function Home() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8">
-            {["Inicio", "Galería", "Cómo pedir", "Contacto"].map((item) => (
+            {["Inicio", "Galeria", "Como pedir", "Contacto"].map((item) => (
               <a
                 key={item}
-                href={`#${item.toLowerCase().replace(/\s/g, "-").replace("ó", "o")}`}
+                href={`#${item.toLowerCase().replace(/\s/g, "-")}`}
                 className="text-sm font-semibold text-foreground-light hover:text-primary-dark transition-colors"
               >
                 {item}
@@ -123,7 +124,7 @@ export default function Home() {
           </nav>
 
           {/* Mobile hamburger */}
-          <button className="md:hidden p-2 rounded-full hover:bg-primary/10 transition-colors" aria-label="Menú">
+          <button className="md:hidden p-2 rounded-full hover:bg-primary/10 transition-colors" aria-label="Menu">
             <svg className="w-6 h-6 text-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
@@ -141,7 +142,7 @@ export default function Home() {
             {/* Text side */}
             <div className="lg:w-1/2 space-y-6 lg:space-y-8 animate-fade-in-up">
               <span className="inline-block px-4 py-1.5 rounded-full bg-primary/20 text-primary-dark text-xs font-bold uppercase tracking-widest border border-primary/30">
-                Artesanía Premium
+                Artesania Premium
               </span>
               <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black text-foreground leading-[1.08] tracking-tight">
                 Amigurumis y tejidos{" "}
@@ -151,7 +152,7 @@ export default function Home() {
                 </span>
               </h2>
               <p className="text-foreground-light text-base lg:text-lg max-w-lg leading-relaxed font-medium">
-                Regalos únicos y eternos, hechos a mano con amor. Cada punto cuenta una historia diferente pensada especialmente para vos.
+                Regalos unicos y eternos, hechos a mano con amor. Cada punto cuenta una historia diferente pensada especialmente para vos.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 pt-2">
                 <a
@@ -194,7 +195,7 @@ export default function Home() {
                     ✨ Tejiendo historias punto a punto
                   </p>
                   <p className="text-foreground-light text-xs lg:text-sm mt-1">
-                    Cada pieza es única — como vos
+                    Cada pieza es unica — como vos
                   </p>
                 </div>
               </div>
@@ -211,7 +212,7 @@ export default function Home() {
               Hecho a Mano con Amor
             </h3>
             <p className="text-foreground-light leading-relaxed text-base lg:text-lg font-medium">
-              Regalos únicos y eternos que cobran vida entre hilos y agujas. Cada punto, cada color, cada detalle es pensado especialmente para vos o para esa persona que querés sorprender.
+              Regalos unicos y eternos que cobran vida entre hilos y agujas. Cada punto, cada color, cada detalle es pensado especialmente para vos o para esa persona que queres sorprender.
             </p>
             <div className="flex justify-center gap-3 pt-3">
               <span className="size-2.5 rounded-full bg-primary" />
@@ -227,7 +228,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="flex items-end justify-between mb-8 lg:mb-12">
             <div>
-              <span className="text-primary-dark text-xs font-bold uppercase tracking-widest">Galería</span>
+              <span className="text-primary-dark text-xs font-bold uppercase tracking-widest">Galeria</span>
               <h3 className="font-display text-3xl lg:text-4xl font-bold text-foreground mt-2">
                 Nuestras Creaciones
               </h3>
@@ -275,7 +276,7 @@ export default function Home() {
           <div className="text-center mb-10 lg:mb-16">
             <span className="text-primary-dark text-xs font-bold uppercase tracking-widest">Proceso</span>
             <h3 className="font-display text-3xl lg:text-4xl font-bold text-foreground mt-2">
-              ¿Cómo pedir tu personalizado?
+              Como pedir tu personalizado
             </h3>
           </div>
 
@@ -319,14 +320,14 @@ export default function Home() {
                   Lo que dicen
                 </span>
                 <blockquote className="font-display text-2xl lg:text-4xl font-bold text-white leading-snug">
-                  &ldquo;Le regalé un amigurumi personalizado a mi hija y fue el regalo más especial que recibió. ¡La calidad es increíble!&rdquo;
+                  &ldquo;Le regale un amigurumi personalizado a mi hija y fue el regalo mas especial que recibio. La calidad es increible!&rdquo;
                 </blockquote>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary/30 flex items-center justify-center text-primary font-bold text-sm">
                     MC
                   </div>
                   <div>
-                    <p className="text-white font-semibold text-sm">María C.</p>
+                    <p className="text-white font-semibold text-sm">Maria C.</p>
                     <p className="text-white/50 text-xs">Cliente feliz</p>
                   </div>
                 </div>
@@ -335,7 +336,7 @@ export default function Home() {
                 <div className="flex-1 relative rounded-2xl overflow-hidden aspect-[3/4]">
                   <Image
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjsz4o5X71MIq4j5lzcjKnk9DY1R5y25QV6nVSw0uwv9Mlcj3NiwSQa_cwwOTdZHzWar0yq8uvLJ2sgF5BIOM1_c0F2gQ72Dt5PzXOynk88RAguqb1CaSEyiT4ugwE6_R6D9X6vW5XONNTrhsOwcBDjw9Lsav57VkYNkKmDgvAk-1W0MDRBsuThjYyHzytGWu9W0xdWpwL3XGmLNjr9Zei1p0FjxppgRoUq28f8BhjJa3aQJPHB5lCzdZ3Pz9VyDxu7JtZ-NDkYg"
-                    alt="Muñeca personalizada"
+                    alt="Muneca personalizada"
                     fill
                     className="object-cover"
                   />
@@ -359,10 +360,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 text-center">
           <div className="max-w-2xl mx-auto space-y-6">
             <h3 className="font-display text-3xl lg:text-5xl font-bold text-foreground">
-              ¿Tenés una idea en mente?
+              Tenes una idea en mente?
             </h3>
             <p className="text-foreground-light text-base lg:text-lg font-medium">
-              Dale vida con hilo y aguja. Contame qué te gustaría y lo hacemos realidad juntos.
+              Dale vida con hilo y aguja. Contame que te gustaria y lo hacemos realidad juntos.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
               <a
@@ -393,25 +394,26 @@ export default function Home() {
                     src="/android-chrome-512x512.png"
                     alt="Logo"
                     fill
+                    sizes="40px"
                     className="object-cover"
                   />
                 </div>
                 <span className="text-lg font-extrabold tracking-tight">Crochet CasRey</span>
               </div>
               <p className="text-white/50 text-sm leading-relaxed max-w-xs">
-                Artesanía hecha con amor, hilo por hilo. Cada creación es una pieza única pensada para vos.
+                Artesania hecha con amor, hilo por hilo. Cada creacion es una pieza unica pensada para vos.
               </p>
             </div>
 
             {/* Links */}
             <div className="flex gap-16 lg:gap-20">
               <div className="space-y-4">
-                <h4 className="text-sm font-bold uppercase tracking-wider text-white/70">Navegación</h4>
+                <h4 className="text-sm font-bold uppercase tracking-wider text-white/70">Navegacion</h4>
                 <div className="flex flex-col gap-2">
-                  {["Inicio", "Galería", "Cómo pedir", "Contacto"].map((item) => (
+                  {["Inicio", "Galeria", "Como pedir", "Contacto"].map((item) => (
                     <a
                       key={item}
-                      href={`#${item.toLowerCase().replace(/\s/g, "-").replace("ó", "o")}`}
+                      href={`#${item.toLowerCase().replace(/\s/g, "-")}`}
                       className="text-white/50 hover:text-primary transition-colors text-sm font-medium"
                     >
                       {item}
@@ -450,7 +452,7 @@ export default function Home() {
         <div className="flex items-center justify-around h-16 px-4">
           {[
             { href: "#inicio", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6", label: "Inicio", active: true },
-            { href: "#galeria", icon: "M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z", label: "Galería", active: false },
+            { href: "#galeria", icon: "M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z", label: "Galeria", active: false },
             { href: "#como-pedir", icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z", label: "Pedidos", active: false },
             { href: "#contacto", icon: "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z", label: "Contacto", active: false },
           ].map((item) => (

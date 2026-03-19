@@ -24,8 +24,8 @@
   --color-foreground-light: var(--foreground-light);
   --color-surface: var(--surface);
   --color-surface-glass: var(--surface-glass);
-  --font-sans: var(--font-fredoka);
-  --font-display: var(--font-fredoka);
+  --font-sans: var(--font-creamy-sauce);
+  --font-display: var(--font-cheeky-rabbit);
 }
 
 * {
@@ -35,7 +35,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), "Fredoka", sans-serif;
+  font-family: var(--font-sans), sans-serif;
   overflow-x: hidden;
 }
 

@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import { Fredoka } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-const fredoka = Fredoka({
-  variable: "--font-fredoka",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+const cheekyRabbit = localFont({
+  src: "../fonts/Cheeky Rabbit.ttf",
+  variable: "--font-cheeky-rabbit",
+});
+
+const creamySauce = localFont({
+  src: "../fonts/Creamy Sauce.otf",
+  variable: "--font-creamy-sauce",
 });
 
 export const metadata: Metadata = {
@@ -30,9 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body
-        className={`${fredoka.variable} antialiased`}
-      >
+      <body className={`${cheekyRabbit.variable} ${creamySauce.variable} antialiased`}>
         {children}
       </body>
     </html>
