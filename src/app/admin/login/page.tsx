@@ -25,19 +25,19 @@ export default async function AdminLoginPage({
           <div className="relative space-y-8">
             <div className="space-y-4">
               <p className="text-xs font-bold uppercase tracking-[0.3em] text-primary">Acceso privado</p>
-              <h1 className="font-display text-5xl leading-none lg:text-6xl">Tu taller digital para la galería.</h1>
+              <h1 className="font-display text-5xl leading-none lg:text-6xl">Tu taller digital para la galeria.</h1>
               <p className="max-w-xl text-base leading-relaxed text-white/70">
-                Desde aquí puedes crear productos, subir imágenes al bucket exclusivo de esta landing y decidir qué
-                piezas se muestran públicamente.
+                Desde aqui puedes crear productos, subir imagenes al bucket exclusivo de esta landing y decidir que
+                piezas se muestran publicamente.
               </p>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               {[
-                "Autenticación estándar de Supabase",
+                "Autenticacion estandar de Supabase",
                 "Datos aislados en un esquema dedicado",
-                "Imágenes guardadas en un bucket propio",
-                "Publicación inmediata en la landing",
+                "Imagenes guardadas en un bucket propio",
+                "Publicacion inmediata en la landing",
               ].map((item) => (
                 <div key={item} className="rounded-[1.6rem] border border-white/10 bg-white/5 p-4 text-sm text-white/75">
                   {item}
@@ -76,13 +76,13 @@ export default async function AdminLoginPage({
                 />
               </label>
               <label className="block space-y-2">
-                <span className="text-sm font-bold text-foreground">Contraseña</span>
+                <span className="text-sm font-bold text-foreground">Contrasena</span>
                 <input
                   name="password"
                   type="password"
                   required
                   className="w-full rounded-2xl border border-primary/20 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50 focus:bg-white"
-                  placeholder="Tu contraseña segura"
+                  placeholder="Tu contrasena segura"
                 />
               </label>
 
@@ -90,7 +90,7 @@ export default async function AdminLoginPage({
                 type="submit"
                 className="mt-2 w-full rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-foreground transition hover:bg-primary-dark hover:text-white"
               >
-                Iniciar sesión
+                Iniciar sesion
               </button>
             </form>
 

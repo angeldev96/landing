@@ -146,7 +146,7 @@ export function AdminDashboard({ initialProducts, adminName, adminEmail }: Dashb
       return;
     }
 
-    const confirmed = window.confirm(`Eliminar "${selectedProduct.name}" también borrará sus imágenes registradas. ¿Continuamos?`);
+    const confirmed = window.confirm(`Eliminar "${selectedProduct.name}" tambien borrara sus imagenes registradas. Continuamos?`);
     if (!confirmed) {
       return;
     }
@@ -172,7 +172,7 @@ export function AdminDashboard({ initialProducts, adminName, adminEmail }: Dashb
 
   async function uploadImage(file: File) {
     if (!selectedProduct) {
-      setMessage("Primero guarda el producto para poder subir imágenes.");
+      setMessage("Primero guarda el producto para poder subir imagenes.");
       return;
     }
 
@@ -182,7 +182,7 @@ export function AdminDashboard({ initialProducts, adminName, adminEmail }: Dashb
     } = await supabase.auth.getUser();
 
     if (!user) {
-      setMessage("Tu sesión expiró. Vuelve a iniciar sesión.");
+      setMessage("Tu sesion expiro. Vuelve a iniciar sesion.");
       return;
     }
 
@@ -317,7 +317,7 @@ export function AdminDashboard({ initialProducts, adminName, adminEmail }: Dashb
         <div className="mt-6 space-y-3">
           {products.length === 0 ? (
             <div className="rounded-3xl border border-dashed border-primary/30 bg-background p-5 text-sm text-foreground-light">
-              Aún no hay productos cargados para esta landing.
+              Aun no hay productos cargados para esta landing.
             </div>
           ) : (
             products.map((product) => {
@@ -394,7 +394,7 @@ export function AdminDashboard({ initialProducts, adminName, adminEmail }: Dashb
                 value={form.slug}
                 onChange={(event) => setForm((current) => ({ ...current, slug: event.target.value }))}
                 className="w-full rounded-2xl border border-primary/20 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50 focus:bg-white"
-                placeholder="Opcional. Se autogenera si lo dejas vacío."
+                placeholder="Opcional. Se autogenera si lo dejas vacio."
               />
             </label>
             <label className="space-y-2">
@@ -423,12 +423,12 @@ export function AdminDashboard({ initialProducts, adminName, adminEmail }: Dashb
           </div>
 
           <label className="mt-4 block space-y-2">
-            <span className="text-sm font-bold text-foreground">Descripción</span>
+            <span className="text-sm font-bold text-foreground">Descripcion</span>
             <textarea
               value={form.description}
               onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
               className="min-h-32 w-full rounded-3xl border border-primary/20 bg-background px-4 py-4 text-sm outline-none transition focus:border-primary/50 focus:bg-white"
-              placeholder="Describe el producto o la idea detrás de la pieza."
+              placeholder="Describe el producto o la idea detras de la pieza."
             />
           </label>
 
@@ -467,13 +467,13 @@ export function AdminDashboard({ initialProducts, adminName, adminEmail }: Dashb
         <div className="rounded-[2rem] border border-primary/20 bg-background-dark p-6 text-white shadow-2xl shadow-primary/10">
           <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.28em] text-primary">Galería del producto</p>
+              <p className="text-xs font-bold uppercase tracking-[0.28em] text-primary">Galeria del producto</p>
               <h3 className="font-display text-3xl">
                 {selectedProduct ? `Fotos de ${selectedProduct.name}` : "Guarda primero tu producto"}
               </h3>
             </div>
             <p className="text-sm text-white/60">
-              Las imágenes se almacenan en el bucket privado de esta landing dentro del mismo proyecto Supabase.
+              Las imagenes se almacenan en el bucket privado de esta landing dentro del mismo proyecto Supabase.
             </p>
           </div>
 
@@ -503,14 +503,14 @@ export function AdminDashboard({ initialProducts, adminName, adminEmail }: Dashb
               <label className="mt-4 flex cursor-pointer items-center justify-center rounded-[1.6rem] border border-dashed border-primary/40 bg-white/5 px-6 py-8 text-center transition hover:bg-white/8">
                 <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
                 <span className="max-w-sm text-sm text-white/75">
-                  Haz clic aquí para subir una foto. Soporta `jpg`, `png`, `webp` y `avif` hasta 10 MB.
+                  Haz clic aqui para subir una foto. Soporta `jpg`, `png`, `webp` y `avif` hasta 10 MB.
                 </span>
               </label>
 
               <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {selectedProduct.images.length === 0 ? (
                   <div className="rounded-[1.6rem] border border-white/10 bg-white/5 p-5 text-sm text-white/60">
-                    Este producto todavía no tiene imágenes.
+                    Este producto todavia no tiene imagenes.
                   </div>
                 ) : (
                   selectedProduct.images.map((image) => (
@@ -561,7 +561,7 @@ export function AdminDashboard({ initialProducts, adminName, adminEmail }: Dashb
             </>
           ) : (
             <div className="mt-6 rounded-[1.8rem] border border-white/10 bg-white/5 p-6 text-sm text-white/65">
-              Guarda un producto primero y luego aquí mismo podrás subirle imágenes.
+              Guarda un producto primero y luego aqui mismo podras subirle imagenes.
             </div>
           )}
         </div>

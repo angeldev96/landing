@@ -15,7 +15,7 @@ const creamySauce = localFont({
 export const metadata: Metadata = {
   title: "Crochet CasRey — Amigurumis y Tejidos Personalizados",
   description:
-    "Regalos únicos y eternos, hechos a mano con amor. Amigurumis, muñecos y tejidos personalizados punto a punto.",
+    "Regalos unicos y eternos, hechos a mano con amor. Amigurumis, munecos y tejidos personalizados punto a punto.",
   keywords: ["crochet", "amigurumi", "tejido", "handmade", "personalizado"],
   icons: {
     icon: [

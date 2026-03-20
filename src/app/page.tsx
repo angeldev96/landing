@@ -466,7 +466,7 @@ export default async function Home() {
           {/* Bottom bar */}
           <div className="mt-12 lg:mt-16 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-white/30 text-xs">
-              © 2025 Crochet CasRey. Hecho con amor 💜
+              © 2026 Crochet CasRey. Hecho con amor 💜
             </p>
             <div className="flex items-center gap-1">
               {[...Array(5)].map((_, i) => (

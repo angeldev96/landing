@@ -31,7 +31,7 @@ export default async function AdminPage() {
               type="submit"
               className="rounded-full border border-primary/30 px-5 py-3 text-sm font-bold text-foreground transition hover:bg-primary/10"
             >
-              Cerrar sesión
+              Cerrar sesion
             </button>
           </form>
         </div>

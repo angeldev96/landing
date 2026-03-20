@@ -34,7 +34,7 @@ export async function loginAction(formData: FormData) {
   });
 
   if (error) {
-    redirect(`/admin/login?message=${encodeURIComponent("No pudimos iniciar sesión. Revisa tus datos.")}`);
+    redirect(`/admin/login?message=${encodeURIComponent("No pudimos iniciar sesion. Revisa tus datos.")}`);
   }
 
   const {
@@ -42,7 +42,7 @@ export async function loginAction(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect(`/admin/login?message=${encodeURIComponent("La sesión no pudo validarse.")}`);
+    redirect(`/admin/login?message=${encodeURIComponent("La sesion no pudo validarse.")}`);
   }
 
   const { data: profile } = await supabase
