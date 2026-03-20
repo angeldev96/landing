@@ -50,17 +50,17 @@ async function getLandingProducts() {
 const steps = [
   {
     num: "01",
-    title: "Elige tu diseno",
-    desc: "Enviame una foto o referencia por Instagram de lo que te gustaria que tejiera. Cualquier idea puede convertirse en hilo.",
+    title: "Elige tu pieza",
+    desc: "Enviame una foto o referencia por Instagram de lo que te gustaria que tejiera. Cualquier idea puede convertirse en un pedido unico.",
   },
   {
     num: "02",
-    title: "Presupuesto y Senia",
-    desc: "Acordamos detalles, tamano, colores y precio. Se reserva con un pequeno adelanto.",
+    title: "Presupuesto y anticipo",
+    desc: "Acordamos detalles, tamano, colores y precio. Se reserva con un pequeno anticipo.",
   },
   {
     num: "03",
-    title: "Magia lista",
+    title: "Pedido listo",
     desc: "Te aviso cuando tu pedido este terminado para ser entregado o enviado a donde quieras.",
   },
 ];
@@ -308,8 +308,8 @@ export default async function Home() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="text-center mb-10 lg:mb-16">
             <span className="text-primary-dark text-xs font-bold uppercase tracking-widest">Proceso</span>
-            <h3 className="font-display text-3xl lg:text-4xl font-bold text-foreground mt-2">
-              Como pedir tu personalizado
+              <h3 className="font-display text-3xl lg:text-4xl font-bold text-foreground mt-2">
+              Como hacer tu pedido
             </h3>
           </div>
 
