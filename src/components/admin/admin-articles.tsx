@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { startTransition, useState } from "react";
 import { deleteArticleAction, refreshAdminArticlesAction, saveArticleAction } from "@/app/admin/article-actions";
 import { createClient } from "@/lib/supabase/client";
@@ -337,6 +338,12 @@ export function AdminArticles({ initialArticles }: { initialArticles: Article[] 
               </h3>
             </div>
             <div className="flex flex-wrap items-center gap-2">
+              <Link
+                href="/admin/guia"
+                className="rounded-full px-3 py-2 text-sm font-bold text-primary-dark transition hover:bg-primary/10"
+              >
+                ¿Cómo funciona? Ver guía
+              </Link>
               {selectedArticle?.isPublished ? (
                 <a
                   href={articleHref(selectedArticle)}
