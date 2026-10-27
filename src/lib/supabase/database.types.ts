@@ -132,6 +132,22 @@ export type Database = {
         };
         Returns: Json;
       };
+      create_crochet_landing_article: {
+        Args: {
+          article_body?: string;
+          article_category: string;
+          article_cover_path?: string;
+          article_excerpt?: string;
+          article_is_published?: boolean;
+          article_price_label?: string;
+          article_section: string;
+          article_slug?: string;
+          article_sort_order?: number;
+          article_title: string;
+          article_video_url?: string;
+        };
+        Returns: Json;
+      };
       create_crochet_landing_product: {
         Args: {
           product_badge?: string;
@@ -143,6 +159,10 @@ export type Database = {
         };
         Returns: Json;
       };
+      delete_crochet_landing_article: {
+        Args: { article_id: string };
+        Returns: string;
+      };
       delete_crochet_landing_product: {
         Args: { product_id: string };
         Returns: undefined;
@@ -151,8 +171,25 @@ export type Database = {
         Args: { input_image_id: string };
         Returns: string;
       };
+      get_crochet_landing_admin_articles: {
+        Args: never;
+        Returns: Json;
+      };
       get_crochet_landing_admin_products: {
         Args: never;
+        Returns: Json;
+      };
+      get_crochet_landing_article: {
+        Args: {
+          input_section: string;
+          input_slug: string;
+        };
+        Returns: Json;
+      };
+      get_crochet_landing_articles: {
+        Args: {
+          input_section: string;
+        };
         Returns: Json;
       };
       get_crochet_landing_gallery_page: {
@@ -182,6 +219,23 @@ export type Database = {
       };
       set_crochet_landing_cover_image: {
         Args: { input_image_id: string };
+        Returns: Json;
+      };
+      update_crochet_landing_article: {
+        Args: {
+          article_body?: string;
+          article_category: string;
+          article_cover_path?: string;
+          article_excerpt?: string;
+          article_id: string;
+          article_is_published?: boolean;
+          article_price_label?: string;
+          article_section: string;
+          article_slug?: string;
+          article_sort_order?: number;
+          article_title: string;
+          article_video_url?: string;
+        };
         Returns: Json;
       };
       update_crochet_landing_product: {
