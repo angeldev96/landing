@@ -17,6 +17,7 @@ import {
   type AdminProductImage,
   type ProductFormPayload,
 } from "@/lib/crochet-landing";
+import { STORE_CATEGORIES, resolveCategory } from "@/lib/categories";
 
 type DashboardProps = {
   initialProducts: AdminProduct[];
@@ -398,13 +399,22 @@ export function AdminDashboard({ initialProducts, adminName, adminEmail }: Dashb
               />
             </label>
             <label className="space-y-2">
-              <span className="text-sm font-bold text-foreground">Etiqueta</span>
+              <span className="text-sm font-bold text-foreground">Categoría</span>
               <input
                 value={form.badge}
                 onChange={(event) => setForm((current) => ({ ...current, badge: event.target.value }))}
+                list="store-categories"
                 className="w-full rounded-2xl border border-primary/20 bg-background px-4 py-3 text-sm outline-none transition focus:border-primary/50 focus:bg-white"
-                placeholder="Favorito, Custom, Hogar..."
+                placeholder="Amigurumis, Flores, Bolsos..."
               />
+              <datalist id="store-categories">
+                {STORE_CATEGORIES.map((category) => (
+                  <option key={category.slug} value={category.name} />
+                ))}
+              </datalist>
+              <span className="block text-xs text-foreground-light">
+                Define en qué sección de la tienda aparece: {resolveCategory(form.badge).name}
+              </span>
             </label>
             <label className="space-y-2">
               <span className="text-sm font-bold text-foreground">Orden</span>

@@ -2,9 +2,14 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
+// Cheeky Rabbit ships blank glyphs for accented letters (á, é, ñ, ¿...), so it is limited to
+// basic Latin and those characters fall back to a rounded system font instead of disappearing.
 const cheekyRabbit = localFont({
   src: "../fonts/Cheeky Rabbit.ttf",
   variable: "--font-cheeky-rabbit",
+  declarations: [{ prop: "unicode-range", value: "U+0020-007E" }],
+  adjustFontFallback: false,
+  fallback: ["ui-rounded", "Arial Rounded MT Bold", "sans-serif"],
 });
 
 const creamySauce = localFont({

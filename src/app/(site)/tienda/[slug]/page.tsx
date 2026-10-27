@@ -4,6 +4,9 @@ import { ProductDetailGallery } from "@/components/gallery/product-detail-galler
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/database.types";
 import { buildStoragePublicUrl, parseProductDetail } from "@/lib/crochet-landing";
+import { categoryHref, resolveCategory } from "@/lib/categories";
+import { SOCIAL_LINKS, buildWhatsappUrl } from "@/lib/site";
+import { SocialIcon } from "@/components/site/social-icon";
 
 export const dynamic = "force-dynamic";
 
@@ -29,20 +32,25 @@ export default async function ProductDetailPage({
   }
 
   const cover = product.images.find((image) => image.isCover) ?? product.images[0] ?? null;
+  const category = resolveCategory(product.badge);
+  const whatsappUrl = buildWhatsappUrl(`¡Hola Crochet CasRey! Me interesa "${product.name}" que vi en la tienda 🧶`);
 
   return (
-    <main className="min-h-screen bg-background pb-16">
+    <main className="pb-16">
       <section className="border-b border-primary/10 bg-surface/60">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 sm:px-6 lg:px-10">
-          <Link
-            href="/galeria"
-            className="inline-flex w-fit rounded-full border border-primary/20 bg-surface px-4 py-2 text-sm font-bold text-foreground transition hover:bg-primary/10"
-          >
-            ← Volver a la galeria
-          </Link>
+          <nav className="flex flex-wrap items-center gap-2 text-sm font-bold text-foreground-light">
+            <Link href="/tienda" className="rounded-full border border-primary/20 bg-surface px-4 py-2 text-foreground transition hover:bg-primary/10">
+              ← Tienda
+            </Link>
+            <span>/</span>
+            <Link href={categoryHref(category)} className="transition hover:text-primary-dark">
+              {category.name}
+            </Link>
+          </nav>
           <div className="flex flex-wrap items-center gap-3">
             <span className="rounded-full bg-primary-light px-4 py-1.5 text-xs font-bold uppercase tracking-[0.24em] text-primary-dark">
-              {product.badge || "Pieza artesanal"}
+              {category.name}
             </span>
             <span className="rounded-full border border-primary/20 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.24em] text-foreground-light">
               {product.images.length} foto{product.images.length === 1 ? "" : "s"}
@@ -70,7 +78,7 @@ export default async function ProductDetailPage({
                 </p>
               </div>
               <div className="rounded-[1.5rem] border border-primary/15 bg-background p-4">
-                <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary-dark">Galeria</p>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary-dark">Galería</p>
                 <p className="mt-2 text-sm text-foreground-light">
                   Toca una miniatura para cambiar la foto principal en celular o escritorio.
                 </p>
@@ -80,20 +88,31 @@ export default async function ProductDetailPage({
 
           <div className="overflow-hidden rounded-[2.2rem] border border-primary/15 bg-background-dark text-white shadow-2xl shadow-primary/10">
             <div className="space-y-4 p-6">
-              <p className="text-xs font-bold uppercase tracking-[0.3em] text-primary">Te gusto esta pieza?</p>
-              <h2 className="font-display text-4xl leading-none">Conversemos por Instagram y la hacemos tuya.</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-primary">¿Te gustó esta pieza?</p>
+              <h2 className="font-display text-4xl leading-none">Escribinos por WhatsApp y la hacemos tuya.</h2>
               <p className="text-sm leading-relaxed text-white/70">
-                Puedes usar esta pagina para revisar detalles y luego escribir directamente para pedir tu version o una
-                personalizada.
+                Revisá los detalles y escribinos directamente para pedir tu versión o una personalizada.
               </p>
-              <a
-                href="https://www.instagram.com/crochetcasrey/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex rounded-full bg-primary px-6 py-3 text-sm font-bold text-foreground transition hover:bg-primary-dark hover:text-white"
-              >
-                Pedir por Instagram
-              </a>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-foreground transition hover:bg-primary-dark hover:text-white"
+                >
+                  <SocialIcon network="whatsapp" className="h-4 w-4" />
+                  Pedir por WhatsApp
+                </a>
+                <a
+                  href={SOCIAL_LINKS.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10"
+                >
+                  <SocialIcon network="instagram" className="h-4 w-4" />
+                  Ver en Instagram
+                </a>
+              </div>
             </div>
 
             {cover ? (
