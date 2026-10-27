@@ -4,6 +4,7 @@ import { logoutAction } from "@/app/admin/actions";
 const ADMIN_TABS = [
   { id: "productos", label: "Productos", href: "/admin" },
   { id: "articulos", label: "Patrones y Aprende", href: "/admin/articulos" },
+  { id: "guia", label: "Guía", href: "/admin/guia" },
 ] as const;
 
 export function AdminHeader({ active }: { active: (typeof ADMIN_TABS)[number]["id"] }) {
