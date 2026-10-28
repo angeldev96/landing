@@ -1,11 +1,21 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { buildStoragePublicUrl } from "@/lib/crochet-landing";
 import { getCatalogProducts, groupByCategory, type CatalogProduct } from "@/lib/catalog";
 import { categoryHref } from "@/lib/categories";
-import { SOCIAL_LABELS, SOCIAL_LINKS, buildWhatsappUrl, type SocialNetwork } from "@/lib/site";
+import { FAQS, SOCIAL_LABELS, SOCIAL_LINKS, buildWhatsappUrl, type SocialNetwork } from "@/lib/site";
+import { SITE_DESCRIPTION, SITE_TITLE, collectionPageJsonLd, faqJsonLd, pageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
 import { ProductCard } from "@/components/site/product-card";
 import { SocialIcon } from "@/components/site/social-icon";
+
+export const metadata: Metadata = pageMetadata({
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  path: "/",
+  absoluteTitle: true,
+});
 
 /* ─── Fallback images (used when the catalog can't be loaded) ─── */
 const fallbackImages = [
@@ -137,6 +147,26 @@ export default async function Home() {
 
   return (
     <main>
+      <JsonLd
+        data={[
+          faqJsonLd(FAQS),
+          ...(featured.length
+            ? [
+                collectionPageJsonLd({
+                  name: "Crochet hecho a mano en Honduras",
+                  description: SITE_DESCRIPTION,
+                  path: "/",
+                  items: featured.map((product) => ({
+                    name: product.name,
+                    path: `/tienda/${product.slug}`,
+                    image: buildStoragePublicUrl(product.coverPath) || undefined,
+                  })),
+                }),
+              ]
+            : []),
+        ]}
+      />
+
       {/* ─── HERO ─── */}
       <section id="inicio" className="relative overflow-hidden">
         <YarnBall className="absolute -right-10 -top-10 hidden h-40 w-40 animate-spin-slow text-primary lg:block" />
@@ -146,18 +176,18 @@ export default async function Home() {
             {/* Text side */}
             <div className="animate-fade-in-up space-y-6 lg:w-1/2 lg:space-y-8">
               <span className="inline-block rounded-full border border-primary/30 bg-primary/20 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary-dark">
-                Hecho a mano en Honduras
+                Crochet hecho a mano en Honduras
               </span>
               <h1 className="font-display text-4xl font-black leading-[1.08] tracking-tight text-foreground sm:text-5xl lg:text-6xl xl:text-7xl">
-                Amigurumis y tejidos{" "}
+                Amigurumis y tejidos de crochet{" "}
                 <span className="relative inline-block">
                   <span className="relative z-10">personalizados</span>
                   <span className="absolute bottom-1 left-0 h-3 w-full -skew-x-3 rounded-sm bg-primary/30 lg:h-4" />
                 </span>
               </h1>
               <p className="max-w-lg text-base font-medium leading-relaxed text-foreground-light lg:text-lg">
-                Regalos únicos y eternos, hechos a mano con amor. Cada punto cuenta una historia diferente pensada
-                especialmente para vos.
+                Regalos únicos y eternos tejidos a mano en Honduras: amigurumis, flores, bolsos y piezas a la medida
+                de tu idea. Cada punto cuenta una historia diferente pensada especialmente para vos.
               </p>
               <div className="flex flex-col gap-4 pt-2 sm:flex-row">
                 <a
@@ -230,7 +260,7 @@ export default async function Home() {
                     {cover ? (
                       <Image
                         src={buildStoragePublicUrl(cover.coverPath)}
-                        alt={category.name}
+                        alt={`${category.name}: crochet hecho a mano en Honduras`}
                         fill
                         sizes="(min-width: 1024px) 25vw, 50vw"
                         className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
@@ -366,6 +396,39 @@ export default async function Home() {
                 ))}
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FAQ ─── */}
+      <section id="preguntas-frecuentes" className="scroll-mt-20 py-16 lg:py-24">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-10">
+          <div className="mb-10 text-center lg:mb-14">
+            <span className="text-xs font-bold uppercase tracking-widest text-primary-dark">Preguntas frecuentes</span>
+            <h2 className="mt-2 font-display text-3xl font-bold text-foreground lg:text-4xl">
+              Todo sobre tu pedido de crochet
+            </h2>
+          </div>
+
+          <div className="space-y-3">
+            {FAQS.map((faq, index) => (
+              <details
+                key={faq.question}
+                open={index === 0}
+                className="group rounded-2xl border border-primary/15 bg-surface/80 p-5 transition-colors open:border-primary/40 open:bg-surface lg:rounded-3xl lg:p-6"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-base font-bold text-foreground lg:text-lg [&::-webkit-details-marker]:hidden">
+                  <h3>{faq.question}</h3>
+                  <span
+                    aria-hidden="true"
+                    className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary-dark transition-transform group-open:rotate-45"
+                  >
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 text-sm font-medium leading-relaxed text-foreground-light lg:text-base">{faq.answer}</p>
+              </details>
+            ))}
           </div>
         </div>
       </section>

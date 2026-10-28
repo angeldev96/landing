@@ -1,6 +1,8 @@
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/database.types";
-import { parseGalleryPageData, type GalleryPageProduct } from "@/lib/crochet-landing";
+import { parseGalleryPageData, parseProductDetail, type GalleryPageProduct } from "@/lib/crochet-landing";
+import { decodeSlug } from "@/lib/slug";
 import { OTHER_CATEGORY, STORE_CATEGORIES, resolveCategory, type StoreCategory } from "@/lib/categories";
 
 // The gallery RPC caps page size, so the full catalog is read page by page.
@@ -48,3 +50,17 @@ export function groupByCategory(products: CatalogProduct[]): CatalogGroup[] {
     products: products.filter((product) => product.category.slug === category.slug),
   }));
 }
+
+// Cached per request so generateMetadata and the product page share one RPC call.
+export const getProductDetail = cache(async (slug: string) => {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_crochet_landing_product_detail", {
+    input_slug: decodeSlug(slug),
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return parseProductDetail((data ?? null) as Json);
+});

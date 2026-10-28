@@ -1,9 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import { buildStoragePublicUrl } from "@/lib/crochet-landing";
-import { ARTICLE_HUBS, findArticleCategory, getYoutubeEmbedUrl, type Article } from "@/lib/articles";
+import {
+  ARTICLE_HUBS,
+  articleHref,
+  articleSummary,
+  findArticleCategory,
+  getYoutubeEmbedUrl,
+  getYoutubeVideoId,
+  type Article,
+} from "@/lib/articles";
 import { buildWhatsappUrl } from "@/lib/site";
+import { articleJsonLd, breadcrumbJsonLd, toDescription } from "@/lib/seo";
 import { SocialIcon } from "@/components/site/social-icon";
+import { JsonLd } from "@/components/seo/json-ld";
 
 type BodyBlock =
   | { type: "heading"; text: string }
@@ -73,10 +83,20 @@ function ArticleBody({ body }: { body: string }) {
   );
 }
 
+const dateFormatter = new Intl.DateTimeFormat("es-HN", { day: "numeric", month: "long", year: "numeric" });
+
+function formatDate(value: string) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "" : dateFormatter.format(date);
+}
+
 export function ArticleView({ article }: { article: Article }) {
   const hub = ARTICLE_HUBS[article.section];
   const category = findArticleCategory(article.section, article.category);
   const embedUrl = getYoutubeEmbedUrl(article.videoUrl);
+  const youtubeId = getYoutubeVideoId(article.videoUrl);
+  const path = articleHref(article);
+  const publishedAt = article.publishedAt || article.createdAt || null;
   const isPaidPattern = article.section === "patrones" && Boolean(article.priceLabel);
   const whatsappUrl = buildWhatsappUrl(
     isPaidPattern
@@ -86,8 +106,33 @@ export function ArticleView({ article }: { article: Article }) {
 
   return (
     <main className="pb-16">
+      <JsonLd
+        data={[
+          articleJsonLd({
+            title: article.title,
+            description: toDescription(articleSummary(article)) || article.title,
+            path,
+            image: buildStoragePublicUrl(article.coverPath) || null,
+            publishedAt: article.publishedAt,
+            updatedAt: article.updatedAt,
+            section: category ? `${hub.label}: ${category.title}` : hub.label,
+            video: youtubeId
+              ? {
+                  embedUrl: `https://www.youtube.com/embed/${youtubeId}`,
+                  contentUrl: `https://www.youtube.com/watch?v=${youtubeId}`,
+                  thumbnailUrl: `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`,
+                }
+              : null,
+          }),
+          breadcrumbJsonLd([
+            { name: hub.label, path: hub.path },
+            ...(category ? [{ name: category.title, path: `${hub.path}#${category.id}` }] : []),
+            { name: article.title, path },
+          ]),
+        ]}
+      />
       <section className="border-b border-primary/10 bg-surface/60">
-        <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-2 px-4 py-6 text-sm font-bold text-foreground-light sm:px-6">
+        <nav aria-label="Ruta de navegación" className="mx-auto flex max-w-4xl flex-wrap items-center gap-2 px-4 py-6 text-sm font-bold text-foreground-light sm:px-6">
           <Link
             href={hub.path}
             className="rounded-full border border-primary/20 bg-surface px-4 py-2 text-foreground transition hover:bg-primary/10"
@@ -102,7 +147,7 @@ export function ArticleView({ article }: { article: Article }) {
               </Link>
             </>
           ) : null}
-        </div>
+        </nav>
       </section>
 
       <article className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:py-12">
@@ -122,6 +167,11 @@ export function ArticleView({ article }: { article: Article }) {
           <h1 className="font-display text-5xl leading-none text-foreground sm:text-6xl">{article.title}</h1>
           {article.excerpt ? (
             <p className="text-lg leading-relaxed text-foreground-light sm:text-xl">{article.excerpt}</p>
+          ) : null}
+          {publishedAt ? (
+            <p className="text-sm font-semibold text-foreground-light">
+              Por Crochet CasRey · <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
+            </p>
           ) : null}
         </header>
 

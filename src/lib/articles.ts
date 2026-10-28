@@ -73,6 +73,11 @@ export function findArticleCategory(section: ArticleSection, categoryId: string)
   return ARTICLE_HUBS[section].categories.find((category) => category.id === categoryId) ?? null;
 }
 
+// Owner-written text for meta descriptions and schema: excerpt first, otherwise the start of the body.
+export function articleSummary(article: Pick<Article, "excerpt" | "body">) {
+  return article.excerpt || article.body || "";
+}
+
 export function articleHref(article: Pick<Article, "section" | "slug">) {
   return `${ARTICLE_HUBS[article.section].path}/${article.slug}`;
 }
@@ -115,12 +120,12 @@ export function parseArticles(input: Json): Article[] {
   return input.map(parseArticle).filter((article): article is Article => Boolean(article));
 }
 
+export function getYoutubeVideoId(url: string | null) {
+  return url?.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{11})/)?.[1] ?? null;
+}
+
 // Returns an embeddable URL for YouTube links; other video links are shown as a plain button.
 export function getYoutubeEmbedUrl(url: string | null) {
-  if (!url) {
-    return null;
-  }
-
-  const match = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{11})/);
-  return match ? `https://www.youtube-nocookie.com/embed/${match[1]}` : null;
+  const videoId = getYoutubeVideoId(url);
+  return videoId ? `https://www.youtube-nocookie.com/embed/${videoId}` : null;
 }

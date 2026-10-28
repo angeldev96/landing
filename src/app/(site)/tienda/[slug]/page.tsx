@@ -1,31 +1,53 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductDetailGallery } from "@/components/gallery/product-detail-gallery";
-import { createClient } from "@/lib/supabase/server";
-import type { Json } from "@/lib/supabase/database.types";
-import { buildStoragePublicUrl, parseProductDetail } from "@/lib/crochet-landing";
+import { buildStoragePublicUrl, type ProductDetail } from "@/lib/crochet-landing";
+import { getProductDetail } from "@/lib/catalog";
 import { categoryHref, resolveCategory } from "@/lib/categories";
 import { SOCIAL_LINKS, buildWhatsappUrl } from "@/lib/site";
+import { breadcrumbJsonLd, pageMetadata, productJsonLd, toDescription } from "@/lib/seo";
 import { SocialIcon } from "@/components/site/social-icon";
+import { JsonLd } from "@/components/seo/json-ld";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProductDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const supabase = await createClient();
-  const { data, error } = await supabase.rpc("get_crochet_landing_product_detail", {
-    input_slug: slug,
-  });
+type Params = { params: Promise<{ slug: string }> };
 
-  if (error) {
-    throw new Error(error.message);
+function productDescription(product: ProductDetail, categoryName: string) {
+  return (
+    toDescription(product.description) ||
+    `${product.name} (${categoryName}): pieza de crochet hecha a mano en Honduras por Crochet CasRey. Pedí la tuya o una versión personalizada por WhatsApp.`
+  );
+}
+
+// Cover first, then the rest of the gallery in the order the owner set.
+function productImages(product: ProductDetail) {
+  return [...product.images]
+    .sort((left, right) => Number(right.isCover) - Number(left.isCover) || left.sortOrder - right.sortOrder)
+    .map((image) => ({ url: buildStoragePublicUrl(image.storagePath), alt: image.altText ?? product.name }))
+    .filter((image) => image.url);
+}
+
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const product = await getProductDetail((await params).slug);
+
+  if (!product) {
+    return { title: "Producto no encontrado", robots: { index: false } };
   }
 
-  const product = parseProductDetail((data ?? null) as Json);
+  const category = resolveCategory(product.badge);
+
+  return pageMetadata({
+    title: `${product.name} · ${category.name} de crochet`,
+    description: productDescription(product, category.name),
+    path: `/tienda/${product.slug}`,
+    images: productImages(product).slice(0, 4),
+  });
+}
+
+export default async function ProductDetailPage({ params }: Params) {
+  const product = await getProductDetail((await params).slug);
 
   if (!product) {
     notFound();
@@ -37,9 +59,25 @@ export default async function ProductDetailPage({
 
   return (
     <main className="pb-16">
+      <JsonLd
+        data={[
+          productJsonLd({
+            name: product.name,
+            description: productDescription(product, category.name),
+            path: `/tienda/${product.slug}`,
+            images: productImages(product).map((image) => image.url),
+            category: category.name,
+          }),
+          breadcrumbJsonLd([
+            { name: "Tienda", path: "/tienda" },
+            { name: category.name, path: categoryHref(category) },
+            { name: product.name, path: `/tienda/${product.slug}` },
+          ]),
+        ]}
+      />
       <section className="border-b border-primary/10 bg-surface/60">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 sm:px-6 lg:px-10">
-          <nav className="flex flex-wrap items-center gap-2 text-sm font-bold text-foreground-light">
+          <nav aria-label="Ruta de navegación" className="flex flex-wrap items-center gap-2 text-sm font-bold text-foreground-light">
             <Link href="/tienda" className="rounded-full border border-primary/20 bg-surface px-4 py-2 text-foreground transition hover:bg-primary/10">
               ← Tienda
             </Link>
@@ -67,7 +105,8 @@ export default async function ProductDetailPage({
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-primary-dark">Detalle del producto</p>
             <h1 className="mt-3 font-display text-5xl leading-none text-foreground sm:text-6xl">{product.name}</h1>
             <p className="mt-5 text-base leading-relaxed text-foreground-light sm:text-lg">
-              {product.description || "Pieza artesanal hecha a mano con el estilo delicado de Crochet CasRey."}
+              {product.description ||
+                "Pieza de crochet hecha a mano en Honduras con el estilo delicado de Crochet CasRey. Podés pedirla igual o personalizada con tus colores por WhatsApp."}
             </p>
 
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
