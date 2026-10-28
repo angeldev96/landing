@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/database.types";
+import { decodeSlug } from "@/lib/slug";
 import { parseArticle, parseArticles, type ArticleSection } from "@/lib/articles";
 
 // PostgREST code for "function not found": the articles migration hasn't been applied yet.
@@ -35,7 +36,7 @@ export const getPublishedArticle = cache(async (section: ArticleSection, slug: s
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("get_crochet_landing_article", {
     input_section: section,
-    input_slug: slug,
+    input_slug: decodeSlug(slug),
   });
 
   if (error) {

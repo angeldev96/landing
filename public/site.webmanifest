@@ -1,6 +1,11 @@
 {
   "name": "Crochet CasRey",
   "short_name": "CasRey",
+  "description": "Crochet hecho a mano en Honduras: amigurumis, flores eternas, bolsos y regalos personalizados.",
+  "lang": "es-HN",
+  "start_url": "/",
+  "scope": "/",
+  "categories": ["shopping", "lifestyle"],
   "icons": [
     {
       "src": "/android-chrome-192x192.png",

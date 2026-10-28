@@ -14,7 +14,7 @@ export function SiteFooter() {
           <div className="space-y-4 lg:w-1/3">
             <div className="flex items-center gap-3">
               <div className="relative size-10 overflow-hidden rounded-full border border-primary/30 bg-primary/20">
-                <Image src="/android-chrome-512x512.png" alt="Logo" fill sizes="40px" className="object-cover" />
+                <Image src="/android-chrome-512x512.png" alt="Logo Crochet CasRey" fill sizes="40px" className="object-cover" />
               </div>
               <span className="text-lg font-extrabold tracking-tight">Crochet CasRey</span>
             </div>

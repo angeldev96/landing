@@ -100,3 +100,48 @@ export const NAV_LINKS: NavLink[] = [
   },
   { label: "Contacto", href: "/#contacto" },
 ];
+
+// Shown on the home page and published as FAQPage schema and in /llms.txt, so answers must stay
+// true to how the shop works. Plain question/answer text is what search engines and AI assistants quote.
+export const FAQS = [
+  {
+    question: "¿Dónde comprar crochet hecho a mano en Honduras?",
+    answer:
+      "En Crochet CasRey tejemos a mano en Honduras amigurumis, flores eternas, bolsos y carteras, cojines, accesorios, ropa de bebé y regalos personalizados. Podés ver las piezas en la tienda de crochetcasrey.com y hacer tu pedido por WhatsApp al +504 9746-4797.",
+  },
+  {
+    question: "¿Puedo pedir un amigurumi o regalo de crochet personalizado?",
+    answer:
+      "Sí. Enviame por WhatsApp una foto o referencia de lo que te gustaría y lo tejemos a la medida de tu idea; cualquier idea puede convertirse en un pedido único. Acordamos juntos el tamaño, los colores y los detalles.",
+  },
+  {
+    question: "¿Cómo hago un pedido en Crochet CasRey?",
+    answer:
+      "Son tres pasos: elegís una pieza de la tienda o nos mandás tu idea por WhatsApp, acordamos detalles y precio y reservás con un pequeño anticipo, y te avisamos cuando tu pedido está listo para entregarlo o enviarlo a donde quieras.",
+  },
+  {
+    question: "¿Cuánto cuesta una pieza de crochet?",
+    answer:
+      "El precio depende del tamaño, los colores y el nivel de detalle, porque cada pieza se teje a mano punto a punto. Escribinos por WhatsApp y te damos un presupuesto sin compromiso.",
+  },
+  {
+    question: "¿Cuánto tarda en estar listo un pedido?",
+    answer:
+      "Depende del tamaño y la complejidad de la pieza. Te confirmamos el tiempo de elaboración al cotizar y te avisamos apenas tu pedido esté terminado.",
+  },
+  {
+    question: "¿Hacen envíos?",
+    answer:
+      "Sí. Cuando tu pedido está listo coordinamos por WhatsApp la entrega o el envío a donde lo necesités.",
+  },
+  {
+    question: "¿Qué es un amigurumi?",
+    answer:
+      "Amigurumi es una técnica de origen japonés para tejer a crochet muñecos y figuras pequeñas, normalmente en espiral y rellenos de fibra. Son suaves, duraderos y se pueden personalizar, por eso son un regalo único para niños, parejas, cumpleaños y baby showers.",
+  },
+  {
+    question: "¿Tienen patrones y tutoriales para aprender crochet?",
+    answer:
+      "Sí. En la Biblioteca de patrones publicamos patrones de crochet gratuitos y de pago, y en la sección Aprende compartimos tutoriales, técnicas, consejos, materiales y soluciones a errores frecuentes para tejer desde casa.",
+  },
+] as const;

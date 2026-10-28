@@ -2,17 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArticleView } from "@/components/site/article-view";
 import { getPublishedArticle } from "@/lib/article-data";
+import { generateArticleMetadata } from "@/lib/article-metadata";
 
 export const dynamic = "force-dynamic";
 
 type Params = { params: Promise<{ slug: string }> };
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const article = await getPublishedArticle("aprende", (await params).slug);
-
-  return article
-    ? { title: `${article.title} — Crochet CasRey`, description: article.excerpt ?? undefined }
-    : { title: "Crochet CasRey" };
+  return generateArticleMetadata("aprende", (await params).slug);
 }
 
 export default async function ArticlePage({ params }: Params) {

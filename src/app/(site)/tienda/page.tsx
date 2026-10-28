@@ -3,14 +3,39 @@ import Link from "next/link";
 import { getCatalogProducts, groupByCategory } from "@/lib/catalog";
 import { STORE_CATEGORIES, categoryHref, findCategoryBySlug } from "@/lib/categories";
 import { buildWhatsappUrl } from "@/lib/site";
+import { buildStoragePublicUrl } from "@/lib/crochet-landing";
+import { breadcrumbJsonLd, collectionPageJsonLd, pageMetadata } from "@/lib/seo";
 import { ProductCard } from "@/components/site/product-card";
+import { JsonLd } from "@/components/seo/json-ld";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Tienda — Crochet CasRey",
-  description: "Amigurumis, flores, bolsos y regalos tejidos a mano en Honduras.",
-};
+type StoreSearchParams = Promise<{ categoria?: string }>;
+
+const STORE_TITLE = "Tienda de crochet en Honduras: amigurumis, flores y bolsos";
+const STORE_DESCRIPTION =
+  "Comprá crochet hecho a mano en Honduras: amigurumis, flores eternas, bolsos, cojines, accesorios, ropa de bebé y regalos personalizados. Pedí por WhatsApp.";
+
+function categoryTitle(name: string) {
+  return `${name} de crochet en Honduras`;
+}
+
+function categoryDescription(desc: string) {
+  return `${desc} Tejidos a mano en Honduras por Crochet CasRey. Pedí el tuyo o uno personalizado por WhatsApp.`;
+}
+
+// Each category is its own indexable URL (?categoria=slug); unknown values fall back to /tienda.
+export async function generateMetadata({ searchParams }: { searchParams: StoreSearchParams }): Promise<Metadata> {
+  const category = findCategoryBySlug((await searchParams).categoria);
+
+  return category
+    ? pageMetadata({
+        title: categoryTitle(category.name),
+        description: categoryDescription(category.desc),
+        path: categoryHref(category),
+      })
+    : pageMetadata({ title: STORE_TITLE, description: STORE_DESCRIPTION, path: "/tienda" });
+}
 
 // How many products each category shows on the "Ver todo" view before linking to its own page.
 const PREVIEW_COUNT = 4;
@@ -18,7 +43,7 @@ const PREVIEW_COUNT = 4;
 export default async function StorePage({
   searchParams,
 }: {
-  searchParams: Promise<{ categoria?: string }>;
+  searchParams: StoreSearchParams;
 }) {
   const params = await searchParams;
   const activeCategory = findCategoryBySlug(params.categoria);
@@ -28,9 +53,28 @@ export default async function StorePage({
   const activeGroup = activeCategory ? groups.find((group) => group.category.slug === activeCategory.slug) : null;
   const countFor = (slug: string) => groups.find((group) => group.category.slug === slug)?.products.length ?? 0;
   const hasOthers = countFor("otros") > 0;
+  const listedProducts = activeGroup ? activeGroup.products : products;
 
   return (
     <main className="pb-16">
+      <JsonLd
+        data={[
+          collectionPageJsonLd({
+            name: activeCategory ? categoryTitle(activeCategory.name) : STORE_TITLE,
+            description: activeCategory ? categoryDescription(activeCategory.desc) : STORE_DESCRIPTION,
+            path: activeCategory ? categoryHref(activeCategory) : "/tienda",
+            items: listedProducts.map((product) => ({
+              name: product.name,
+              path: `/tienda/${product.slug}`,
+              image: buildStoragePublicUrl(product.coverPath) || undefined,
+            })),
+          }),
+          breadcrumbJsonLd([
+            { name: "Tienda", path: "/tienda" },
+            ...(activeCategory ? [{ name: activeCategory.name, path: categoryHref(activeCategory) }] : []),
+          ]),
+        ]}
+      />
       {/* ─── HEADER ─── */}
       <section className="relative overflow-hidden border-b border-primary/10 bg-background-dark text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(195,180,253,0.22),_transparent_36%),radial-gradient(circle_at_bottom_right,_rgba(251,191,36,0.14),_transparent_26%)]" />
@@ -40,12 +84,12 @@ export default async function StorePage({
               {activeCategory ? "Tienda · Categoría" : "Tienda"}
             </p>
             <h1 className="font-display text-5xl leading-none sm:text-6xl lg:text-7xl">
-              {activeCategory ? activeCategory.name : "Cada pieza tiene su propia historia tejida."}
+              {activeCategory ? `${activeCategory.name} de crochet` : "Cada pieza tiene su propia historia tejida."}
             </h1>
             <p className="max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg">
               {activeCategory
                 ? activeCategory.desc
-                : "Explorá nuestras creaciones por categoría, entrá al detalle de cada producto y escribinos por WhatsApp para pedir la tuya."}
+                : "Crochet hecho a mano en Honduras. Explorá nuestras creaciones por categoría, entrá al detalle de cada producto y escribinos por WhatsApp para pedir la tuya."}
             </p>
           </div>
         </div>
