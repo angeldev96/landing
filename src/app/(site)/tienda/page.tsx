@@ -56,7 +56,7 @@ export default async function StorePage({
   const listedProducts = activeGroup ? activeGroup.products : products;
 
   return (
-    <main className="pb-16">
+    <main className="pb-16" id="contenido">
       <JsonLd
         data={[
           collectionPageJsonLd({
@@ -76,17 +76,16 @@ export default async function StorePage({
         ]}
       />
       {/* ─── HEADER ─── */}
-      <section className="relative overflow-hidden border-b border-primary/10 bg-background-dark text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(195,180,253,0.22),_transparent_36%),radial-gradient(circle_at_bottom_right,_rgba(251,191,36,0.14),_transparent_26%)]" />
-        <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-10 lg:py-16">
+      <section className="relative overflow-hidden bg-pink text-foreground">
+        <div className="wrap relative py-10 lg:py-16">
           <div className="max-w-3xl space-y-4">
-            <p className="text-xs font-bold uppercase tracking-[0.32em] text-primary">
+            <p className="text-sm font-semibold text-foreground/80">
               {activeCategory ? "Tienda · Categoría" : "Tienda"}
             </p>
             <h1 className="font-display text-5xl leading-none sm:text-6xl lg:text-7xl">
               {activeCategory ? `${activeCategory.name} de crochet` : "Cada pieza tiene su propia historia tejida."}
             </h1>
-            <p className="max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg">
+            <p className="max-w-2xl text-base leading-relaxed text-foreground/80 sm:text-lg">
               {activeCategory
                 ? activeCategory.desc
                 : "Crochet hecho a mano en Honduras. Explorá nuestras creaciones por categoría, entrá al detalle de cada producto y escribinos por WhatsApp para pedir la tuya."}
@@ -96,8 +95,8 @@ export default async function StorePage({
       </section>
 
       {/* ─── CATEGORY CHIPS ─── */}
-      <div className="sticky top-16 z-30 border-b border-primary/10 bg-background/85 backdrop-blur-xl lg:top-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
+      <div className="sticky top-[var(--nav)] z-30 border-b border-primary/10 bg-background/85 backdrop-blur-xl">
+        <div className="wrap">
           <div className="-mx-4 flex gap-2 overflow-x-auto px-4 py-3 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0">
             <CategoryChip href="/tienda" label="Todos" count={products.length} active={!activeCategory} />
             {STORE_CATEGORIES.map((category) => (
@@ -121,10 +120,10 @@ export default async function StorePage({
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+      <div className="wrap py-8 lg:py-12">
         {activeGroup ? (
           activeGroup.products.length > 0 ? (
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
+            <div className="rise-group grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
               {activeGroup.products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -157,7 +156,7 @@ export default async function StorePage({
                     </Link>
                   ) : null}
                 </div>
-                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
+                <div className="rise-group grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
                   {items.slice(0, PREVIEW_COUNT).map((product) => (
                     <ProductCard key={product.id} product={product} />
                   ))}

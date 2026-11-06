@@ -45,3 +45,6 @@ next-env.d.ts
 skills-lock.json
 .agents/*
 .claude/skills/
+
+# tasteskill deal history (local)
+.taste-skill/

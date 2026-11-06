@@ -1,88 +1,114 @@
 import Link from "next/link";
 import Image from "next/image";
-import { NAV_LINKS, SOCIAL_LABELS, SOCIAL_LINKS, type SocialNetwork } from "@/lib/site";
+import { STORE_CATEGORIES, categoryHref } from "@/lib/categories";
+import {
+  LEARN_SECTIONS,
+  MAIN_ACTION_LABEL,
+  PATTERN_SECTIONS,
+  SOCIAL_LABELS,
+  SOCIAL_LINKS,
+  WHATSAPP_DISPLAY,
+  WHATSAPP_NUMBER,
+  type SocialNetwork,
+} from "@/lib/site";
 import { SocialIcon } from "@/components/site/social-icon";
 
-const NETWORKS: SocialNetwork[] = ["whatsapp", "instagram", "facebook", "tiktok"];
+// Each channel with its real full-colour mark (public/icons, fetched by tasteskill's icons.mjs).
+const CHANNELS: { network: SocialNetwork; href: string; icon: string }[] = [
+  { network: "whatsapp", href: `https://wa.me/${WHATSAPP_NUMBER}`, icon: "/icons/whatsapp.svg" },
+  { network: "facebook", href: SOCIAL_LINKS.facebook, icon: "/icons/facebook.svg" },
+  { network: "tiktok", href: SOCIAL_LINKS.tiktok, icon: "/icons/tiktok.svg" },
+  { network: "instagram", href: SOCIAL_LINKS.instagram, icon: "/icons/instagram.svg" },
+];
 
+/*
+ * The closing section of every page (tasteskill footer.closing): row 1 is the contact block with the
+ * main action set large, row 2 the directory and the legal line. "Contacto" in the nav lands here.
+ */
 export function SiteFooter() {
   // Server Component: renders once per request on the server, so reading the clock is safe here.
   // oxlint-disable-next-line react/purity
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative mt-8 rounded-t-[2rem] bg-background-dark text-white lg:rounded-t-[4rem]">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-10 lg:py-20">
-        <div className="flex flex-col gap-10 lg:flex-row lg:justify-between lg:gap-20">
-          {/* Brand */}
-          <div className="space-y-4 lg:w-1/3">
-            <div className="flex items-center gap-3">
-              <div className="relative size-10 overflow-hidden rounded-full border border-primary/30 bg-primary/20">
-                <Image src="/android-chrome-512x512.png" alt="Logo Crochet CasRey" fill sizes="40px" className="object-cover" />
-              </div>
-              <span className="font-display text-xl">Crochet CasRey</span>
-            </div>
-            <p className="max-w-xs text-sm leading-relaxed text-white/70">
-              Artesanía hecha con amor, hilo por hilo. Cada creación es una pieza única pensada para vos.
+    <footer className="closing" id="contacto" aria-labelledby="contacto-h">
+      <div className="wrap closing__wrap">
+        <div className="closing__cta">
+          <div className="closing__head">
+            <h2 id="contacto-h" className="t-h2">
+              Contacto y pedidos
+            </h2>
+            <p className="t-lead closing__lead">
+              Te respondemos por WhatsApp al {WHATSAPP_DISPLAY}. En Facebook y TikTok publicamos cada pieza nueva.
             </p>
-            <div className="flex items-center gap-3">
-              {NETWORKS.map((network) => (
-                <a
-                  key={network}
-                  href={SOCIAL_LINKS[network]}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={SOCIAL_LABELS[network].name}
-                  className="flex size-10 items-center justify-center rounded-full bg-white/10 text-white/70 transition-colors hover:bg-pink hover:text-foreground"
-                >
-                  <SocialIcon network={network} className="h-4 w-4" />
+          </div>
+          <a
+            href={SOCIAL_LINKS.whatsapp}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn--primary btn--xl"
+          >
+            {MAIN_ACTION_LABEL}
+            <SocialIcon network="whatsapp" className="btn__icon" />
+          </a>
+          <ul className="channels">
+            {CHANNELS.map((channel) => (
+              <li key={channel.network}>
+                <a href={channel.href} target="_blank" rel="noopener noreferrer" className="channel">
+                  <Image src={channel.icon} alt="" width={32} height={32} className="channel__icon" unoptimized />
+                  <span>
+                    <span className="channel__name">{SOCIAL_LABELS[channel.network].name}</span>
+                    <span className="channel__handle">{SOCIAL_LABELS[channel.network].handle}</span>
+                  </span>
                 </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Links */}
-          <div className="grid grid-cols-2 gap-10 sm:flex sm:gap-16 lg:gap-20">
-            <div className="space-y-4">
-              <h4 className="text-base font-bold text-white">Navegación</h4>
-              <div className="flex flex-col gap-2">
-                {NAV_LINKS.map((link) => (
-                  <Link key={link.label} href={link.href} className="text-sm font-medium text-white/70 transition-colors hover:text-pink">
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <div className="space-y-4">
-              <h4 className="text-base font-bold text-white">Contacto</h4>
-              <div className="flex flex-col gap-2">
-                {NETWORKS.map((network) => (
-                  <a
-                    key={network}
-                    href={SOCIAL_LINKS[network]}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm font-medium text-white/70 transition-colors hover:text-pink"
-                  >
-                    {SOCIAL_LABELS[network].name}
-                    <span className="block text-xs text-white/55">{SOCIAL_LABELS[network].handle}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row lg:mt-16">
-          <p className="text-xs text-white/55">© {year} Crochet CasRey, Honduras. Hecho con amor 💜</p>
-          <div className="flex items-center gap-1">
-            {[...Array(5)].map((_, i) => (
-              <svg key={i} className="h-4 w-4 text-accent" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-            ))}
-            <span className="ml-2 text-xs text-white/60">5.0 de nuestros clientes</span>
+        <div className="closing__dir">
+          <div className="closing__cols">
+            <Link href="/" className="closing__brand" aria-label="Crochet CasRey, inicio">
+              <Image src="/android-chrome-192x192.png" alt="" width={48} height={48} className="closing__logo" />
+              <span>Crochet CasRey</span>
+            </Link>
+            <div>
+              <h3 className="closing__colhead">Tienda</h3>
+              <ul>
+                {STORE_CATEGORIES.slice(0, 6).map((category) => (
+                  <li key={category.slug}>
+                    <Link href={categoryHref(category)}>{category.name}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 className="closing__colhead">Patrones</h3>
+              <ul>
+                {PATTERN_SECTIONS.map((section) => (
+                  <li key={section.id}>
+                    <Link href={`/patrones#${section.id}`}>{section.title}</Link>
+                  </li>
+                ))}
+                <li>
+                  <Link href="/#como-pedir">Cómo pedir</Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="closing__colhead">Aprende</h3>
+              <ul>
+                {LEARN_SECTIONS.map((section) => (
+                  <li key={section.id}>
+                    <Link href={`/aprende#${section.id}`}>{section.title}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="closing__legal">
+            <p>© {year} Crochet CasRey, tejido a mano en Honduras.</p>
+            <p>WhatsApp, Facebook, TikTok e Instagram son marcas de sus dueños.</p>
           </div>
         </div>
       </div>

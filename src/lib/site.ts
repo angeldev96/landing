@@ -5,6 +5,11 @@ export const WHATSAPP_DISPLAY = "+504 9746-4797";
 
 export const DEFAULT_WHATSAPP_MESSAGE = "¡Hola Crochet CasRey! Vi su página y me gustaría hacer un pedido 🧶";
 
+// The one main action: the same words in the header, the home hero, the closing and the phone bar.
+export const MAIN_ACTION_LABEL = "Pedir por WhatsApp";
+
+export const CUSTOM_ORDER_MESSAGE = "¡Hola Crochet CasRey! Me gustaría pedir una pieza personalizada 🧶";
+
 export function buildWhatsappUrl(message = DEFAULT_WHATSAPP_MESSAGE) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
@@ -83,7 +88,7 @@ export const NAV_LINKS: NavLink[] = [
     label: "Tienda",
     href: "/tienda",
     children: [
-      { label: "Ver todo", href: "/tienda" },
+      { label: "Toda la tienda", href: "/tienda" },
       ...STORE_CATEGORIES.map((category) => ({ label: category.name, href: categoryHref(category) })),
     ],
   },
@@ -98,7 +103,8 @@ export const NAV_LINKS: NavLink[] = [
     href: "/aprende",
     children: LEARN_SECTIONS.map((section) => ({ label: section.title, href: `/aprende#${section.id}` })),
   },
-  { label: "Contacto", href: "/#contacto" },
+  // The contact block closes every page (the site footer), so this stays on the current page.
+  { label: "Contacto", href: "#contacto" },
 ];
 
 // Shown on the home page and published as FAQPage schema and in /llms.txt, so answers must stay
