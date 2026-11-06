@@ -64,3 +64,15 @@ export const getProductDetail = cache(async (slug: string) => {
 
   return parseProductDetail((data ?? null) as Json);
 });
+
+// Some product names are typed in ALL CAPS in the admin. Shown as-is they shout next to the
+// mixed-case ones, so all-caps names are rendered in title case ("SET SANTA CLAUS" → "Set Santa Claus").
+export function displayProductName(name: string) {
+  if (name !== name.toLocaleUpperCase("es") || name === name.toLocaleLowerCase("es")) {
+    return name;
+  }
+
+  return name
+    .toLocaleLowerCase("es")
+    .replace(/(^|[\s-])(\p{L})/gu, (_, gap: string, letter: string) => gap + letter.toLocaleUpperCase("es"));
+}

@@ -11,7 +11,7 @@ export default function SiteLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="relative min-h-screen bg-background grain-overlay">
+    <div className="relative min-h-screen bg-background">
       <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
       <SiteHeader />
       {children}

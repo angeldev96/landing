@@ -1,22 +1,30 @@
 @import "tailwindcss";
 
+/*
+ * Palette taken from the Crochet CasRey logo: the bubble-gum pink background,
+ * the lilac hat, the butter-yellow flower and a deep plum ink for text.
+ */
 :root {
-  --primary: #c3b4fd;
-  --primary-dark: #a78bfa;
-  --primary-light: #e8e0ff;
-  --accent: #fbbf24;
-  --background: #f6f5f8;
-  --background-dark: #130f23;
-  --foreground: #1e1b2e;
-  --foreground-light: #64607a;
+  --primary: #bba6f0; /* lila sombrero */
+  --primary-dark: #6b4fbf; /* lila profundo: links and text accents, AA on white */
+  --primary-light: #ede6ff;
+  --pink: #f8b4cc; /* rosa chicle */
+  --pink-light: #fde3ec;
+  --accent: #f5d77a; /* mantequilla */
+  --background: #fff9fb; /* papel */
+  --background-dark: #2e1a38; /* tinta ciruela */
+  --foreground: #2e1a38;
+  --foreground-light: #6b5874;
   --surface: #ffffff;
-  --surface-glass: rgba(255, 255, 255, 0.65);
+  --surface-glass: rgba(255, 255, 255, 0.7);
 }
 
 @theme inline {
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
   --color-primary-light: var(--primary-light);
+  --color-pink: var(--pink);
+  --color-pink-light: var(--pink-light);
   --color-accent: var(--accent);
   --color-background: var(--background);
   --color-background-dark: var(--background-dark);
@@ -24,8 +32,8 @@
   --color-foreground-light: var(--foreground-light);
   --color-surface: var(--surface);
   --color-surface-glass: var(--surface-glass);
-  --font-sans: var(--font-creamy-sauce);
-  --font-display: var(--font-cheeky-rabbit);
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-caprasimo), Georgia, serif;
 }
 
 * {
@@ -35,28 +43,38 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), sans-serif;
+  font-family: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
   overflow-x: hidden;
 }
 
-/* Smooth scroll */
+/* Caprasimo ships a single weight; never let the browser fake a bold on top of it. */
+.font-display {
+  font-weight: 400;
+  font-synthesis: none;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
-/* Glass card utility */
+:focus-visible {
+  outline: 3px solid var(--primary-dark);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
 .glass-card {
   background: var(--surface-glass);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(195, 180, 253, 0.25);
+  border: 1px solid rgba(187, 166, 240, 0.3);
 }
 
 /* Animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(32px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
@@ -72,22 +90,18 @@ html {
 @keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.92);
+    transform: scale(0.92) rotate(var(--tilt, 0deg));
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1) rotate(var(--tilt, 0deg));
   }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-12px); }
-}
-
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+/* Running stitch drawn around the hero patch on load. */
+@keyframes stitch-in {
+  from { stroke-dashoffset: 120; opacity: 0; }
+  to { stroke-dashoffset: 0; opacity: 1; }
 }
 
 .animate-fade-in-up {
@@ -102,12 +116,8 @@ html {
   animation: scaleIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-spin-slow {
-  animation: spin-slow 20s linear infinite;
+.animate-stitch-in {
+  animation: stitch-in 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
 }
 
 /* Stagger delays */
@@ -119,16 +129,26 @@ html {
 .delay-600 { animation-delay: 600ms; }
 .delay-700 { animation-delay: 700ms; }
 
-/* Decorative grain overlay */
-.grain-overlay::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.035;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 128px 128px;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Horizontal scroll rows on phones, without a visible scrollbar. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 /* Custom scrollbar */

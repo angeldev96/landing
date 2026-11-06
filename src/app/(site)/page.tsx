@@ -9,6 +9,7 @@ import { SITE_DESCRIPTION, SITE_TITLE, collectionPageJsonLd, faqJsonLd, pageMeta
 import { JsonLd } from "@/components/seo/json-ld";
 import { ProductCard } from "@/components/site/product-card";
 import { SocialIcon } from "@/components/site/social-icon";
+import { StitchLine, Stitches } from "@/components/site/stitches";
 
 export const metadata: Metadata = pageMetadata({
   title: SITE_TITLE,
@@ -78,48 +79,26 @@ function pickHeroProducts(products: CatalogProduct[]) {
 
 const steps = [
   {
-    num: "01",
-    title: "Elegí tu pieza",
-    desc: "Mirá la tienda o enviame por WhatsApp una foto o referencia de lo que te gustaría que tejiera. Cualquier idea puede convertirse en un pedido único.",
+    title: "Elegí tu pieza o contame tu idea",
+    desc: "Mirá la tienda o mandame por WhatsApp una foto o referencia de lo que te gustaría. Cualquier idea puede convertirse en un pedido único.",
   },
   {
-    num: "02",
-    title: "Presupuesto y anticipo",
-    desc: "Acordamos detalles, tamaño, colores y precio. Se reserva con un pequeño anticipo.",
+    title: "Acordamos detalles y precio",
+    desc: "Definimos tamaño, colores y precio. Reservás tu pedido con un pequeño anticipo.",
   },
   {
-    num: "03",
-    title: "Pedido listo",
-    desc: "Te aviso cuando tu pedido esté terminado para ser entregado o enviado a donde quieras.",
+    title: "Recibí tu pedido",
+    desc: "Te aviso cuando esté terminado y coordinamos la entrega o el envío a donde lo necesités.",
   },
 ];
 
-const contactNetworks: { network: SocialNetwork; cta: string }[] = [
-  { network: "whatsapp", cta: "Escribime" },
-  { network: "instagram", cta: "Seguime" },
-  { network: "facebook", cta: "Visitame" },
-  { network: "tiktok", cta: "Mirá mis videos" },
-];
+const heroFacts = ["Tejido a mano en Honduras", "Diseños a tu medida", "Entregas y envíos"];
 
-/* ─── SVG decorations ─── */
-function YarnBall({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="60" cy="60" r="50" fill="currentColor" opacity="0.12" />
-      <circle cx="60" cy="60" r="50" stroke="currentColor" strokeWidth="2" opacity="0.25" />
-      <path
-        d="M30 60C30 60 45 30 60 30C75 30 90 60 90 60C90 60 75 90 60 90C45 90 30 60 30 60Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        opacity="0.2"
-      />
-      <path d="M60 10C60 10 30 45 30 60C30 75 60 110 60 110" stroke="currentColor" strokeWidth="1.5" opacity="0.15" />
-      <path d="M60 10C60 10 90 45 90 60C90 75 60 110 60 110" stroke="currentColor" strokeWidth="1.5" opacity="0.15" />
-    </svg>
-  );
-}
+const otherNetworks: SocialNetwork[] = ["instagram", "facebook", "tiktok"];
 
-// Collage cells: one big tile and four small ones.
+const CUSTOM_ORDER_MESSAGE = "¡Hola Crochet CasRey! Me gustaría pedir una pieza personalizada 🧶";
+
+// Hero mosaic: one tall tile and four small ones on a 3×3 grid.
 const collageCells = [
   "col-span-2 row-span-2",
   "col-start-3 row-start-1",
@@ -127,6 +106,47 @@ const collageCells = [
   "col-start-1 row-start-3",
   "col-span-2 col-start-2 row-start-3",
 ];
+
+/* Small heart used as the bullet for the hero facts. */
+function HeartBullet() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 16 16" className="size-3.5 shrink-0 text-foreground">
+      <path
+        fill="currentColor"
+        d="M8 14.2 6.9 13.2C3 9.7.5 7.4.5 4.6.5 2.3 2.3.5 4.6.5c1.3 0 2.5.6 3.4 1.6C8.9 1.1 10.1.5 11.4.5c2.3 0 4.1 1.8 4.1 4.1 0 2.8-2.5 5.1-6.4 8.6L8 14.2Z"
+      />
+    </svg>
+  );
+}
+
+function WhatsappButton({
+  href = SOCIAL_LINKS.whatsapp,
+  children,
+  tone = "ink",
+  className = "",
+}: {
+  href?: string;
+  children: React.ReactNode;
+  tone?: "ink" | "pink";
+  className?: string;
+}) {
+  const tones = {
+    ink: "bg-foreground text-white hover:bg-primary-dark",
+    pink: "bg-pink text-foreground hover:bg-white",
+  };
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`inline-flex items-center justify-center gap-3 rounded-full px-7 py-4 text-base font-bold transition-colors active:scale-[0.98] ${tones[tone]} ${className}`}
+    >
+      <SocialIcon network="whatsapp" className="size-5" />
+      {children}
+    </a>
+  );
+}
 
 /* ─── Page ─── */
 export default async function Home() {
@@ -167,67 +187,57 @@ export default async function Home() {
         ]}
       />
 
-      {/* ─── HERO ─── */}
-      <section id="inicio" className="relative overflow-hidden">
-        <YarnBall className="absolute -right-10 -top-10 hidden h-40 w-40 animate-spin-slow text-primary lg:block" />
+      {/* ─── HERO: a pink patch sewn onto the page ─── */}
+      <section id="inicio" className="px-3 pt-3 sm:px-6 lg:px-10 lg:pt-6">
+        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-pink lg:rounded-[3rem]">
+          <Stitches className="inset-2.5 text-white lg:inset-4" radius={26} animate />
 
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-10 lg:py-20">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16">
-            {/* Text side */}
-            <div className="animate-fade-in-up space-y-6 lg:w-1/2 lg:space-y-8">
-              <span className="inline-block rounded-full border border-primary/30 bg-primary/20 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary-dark">
-                Crochet hecho a mano en Honduras
-              </span>
-              <h1 className="font-display text-4xl font-black leading-[1.08] tracking-tight text-foreground sm:text-5xl lg:text-6xl xl:text-7xl">
-                Amigurumis y tejidos de crochet{" "}
-                <span className="relative inline-block">
-                  <span className="relative z-10">personalizados</span>
-                  <span className="absolute bottom-1 left-0 h-3 w-full -skew-x-3 rounded-sm bg-primary/30 lg:h-4" />
-                </span>
+          <div className="relative grid gap-10 px-6 pb-8 pt-10 sm:px-10 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14 lg:px-16 lg:py-20">
+            <div className="animate-fade-in-up">
+              <h1 className="font-display text-[2.6rem] leading-[1.02] text-foreground sm:text-6xl lg:text-[4.4rem]">
+                Amigurumis y regalos de crochet tejidos a mano
               </h1>
-              <p className="max-w-lg text-base font-medium leading-relaxed text-foreground-light lg:text-lg">
-                Regalos únicos y eternos tejidos a mano en Honduras: amigurumis, flores, bolsos y piezas a la medida
-                de tu idea. Cada punto cuenta una historia diferente pensada especialmente para vos.
+              <p className="mt-6 max-w-[34rem] text-lg leading-relaxed text-foreground/80 lg:text-xl">
+                Elegí una pieza de la tienda o mandame una foto de tu idea y la tejemos a tu medida, punto a punto, desde
+                Honduras.
               </p>
-              <div className="flex flex-col gap-4 pt-2 sm:flex-row">
-                <a
-                  href={SOCIAL_LINKS.whatsapp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-3 rounded-full bg-primary px-8 py-4 text-base font-bold text-foreground shadow-xl shadow-primary/25 transition-all hover:bg-primary-dark hover:text-white hover:shadow-primary-dark/30 active:scale-95"
-                >
-                  <SocialIcon network="whatsapp" />
-                  Pedí por WhatsApp
-                </a>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <WhatsappButton>Pedir por WhatsApp</WhatsappButton>
                 <Link
                   href="/tienda"
-                  className="flex items-center justify-center gap-2 rounded-full border-2 border-primary/40 px-8 py-4 text-base font-bold text-foreground transition-all hover:bg-primary/10"
+                  className="inline-flex items-center justify-center rounded-full bg-white px-7 py-4 text-base font-bold text-foreground transition-colors hover:bg-pink-light"
                 >
-                  Ver productos →
+                  Ver la tienda
                 </Link>
               </div>
+              <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-foreground">
+                {heroFacts.map((fact) => (
+                  <li key={fact} className="flex items-center gap-2">
+                    <HeartBullet />
+                    {fact}
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            {/* Catalog collage */}
-            <div className="mt-10 animate-fade-in-up delay-200 lg:mt-0 lg:w-1/2">
-              <div className="grid aspect-square grid-cols-3 grid-rows-3 gap-3 lg:gap-4">
-                {heroImages.map((image, index) => (
-                  <Link
-                    key={`${image.src}-${index}`}
-                    href={image.href}
-                    className={`group relative overflow-hidden rounded-2xl bg-primary/10 shadow-lg shadow-primary/10 lg:rounded-3xl ${collageCells[index]}`}
-                  >
-                    <Image
-                      src={image.src}
-                      alt={image.alt}
-                      fill
-                      sizes={index === 0 ? "(min-width: 1024px) 33vw, 66vw" : "(min-width: 1024px) 17vw, 33vw"}
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                      priority={index === 0}
-                    />
-                  </Link>
-                ))}
-              </div>
+            <div className="grid aspect-square grid-cols-3 grid-rows-3 gap-2.5 sm:gap-3 lg:gap-4">
+              {heroImages.map((image, index) => (
+                <Link
+                  key={`${image.src}-${index}`}
+                  href={image.href}
+                  className={`group relative animate-scale-in overflow-hidden rounded-2xl bg-pink-light ring-4 ring-white lg:rounded-3xl ${collageCells[index]}`}
+                  style={{ animationDelay: `${200 + index * 90}ms` }}
+                >
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    sizes={index === 0 ? "(min-width: 1024px) 30vw, 66vw" : "(min-width: 1024px) 15vw, 33vw"}
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    priority={index === 0}
+                  />
+                </Link>
+              ))}
             </div>
           </div>
         </div>
@@ -237,17 +247,17 @@ export default async function Home() {
       {categoryGroups.length > 0 ? (
         <section className="py-16 lg:py-24">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-            <div className="mb-8 flex items-end justify-between lg:mb-12">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-primary-dark">Tienda</span>
-                <h2 className="mt-2 font-display text-3xl font-bold text-foreground lg:text-4xl">Explorá por categoría</h2>
-              </div>
-              <Link href="/tienda" className="text-sm font-bold text-primary-dark underline-offset-4 hover:underline">
-                Ver todo →
+            <div className="mb-8 flex items-end justify-between gap-6 lg:mb-10">
+              <h2 className="font-display text-3xl text-foreground lg:text-5xl">Elegí por categoría</h2>
+              <Link
+                href="/tienda"
+                className="shrink-0 text-sm font-bold text-primary-dark underline decoration-2 underline-offset-4 hover:text-foreground"
+              >
+                Ver toda la tienda
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
+            <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 lg:grid-cols-4 lg:gap-6">
               {categoryGroups.map(({ category, products: items }) => {
                 const cover = items.find((item) => item.coverPath);
 
@@ -255,222 +265,208 @@ export default async function Home() {
                   <Link
                     key={category.slug}
                     href={categoryHref(category)}
-                    className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-primary/10 shadow-sm transition-all duration-500 hover:shadow-xl hover:shadow-primary/10 lg:rounded-3xl"
+                    className="group w-[44%] shrink-0 snap-start rounded-3xl sm:w-auto"
                   >
-                    {cover ? (
-                      <Image
-                        src={buildStoragePublicUrl(cover.coverPath)}
-                        alt={`${category.name}: crochet hecho a mano en Honduras`}
-                        fill
-                        sizes="(min-width: 1024px) 25vw, 50vw"
-                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                      />
-                    ) : null}
-                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/75 via-foreground/10 to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4 lg:bottom-6 lg:left-6 lg:right-6">
-                      <h3 className="font-display text-2xl text-white lg:text-4xl">{category.name}</h3>
-                      <p className="mt-1 text-xs font-bold uppercase tracking-[0.2em] text-white/75">
-                        {items.length} pieza{items.length === 1 ? "" : "s"} →
-                      </p>
+                    <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-pink-light">
+                      {cover ? (
+                        <Image
+                          src={buildStoragePublicUrl(cover.coverPath)}
+                          alt={`${category.name}: crochet hecho a mano en Honduras`}
+                          fill
+                          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 45vw"
+                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        />
+                      ) : null}
                     </div>
+                    <h3 className="mt-3 font-display text-xl text-foreground group-hover:text-primary-dark lg:text-2xl">
+                      {category.name}
+                    </h3>
+                    <p className="text-sm text-foreground-light">
+                      {items.length} pieza{items.length === 1 ? "" : "s"}
+                    </p>
                   </Link>
                 );
               })}
+
               <a
-                href={buildWhatsappUrl("¡Hola Crochet CasRey! Me gustaría pedir una pieza personalizada 🧶")}
+                href={buildWhatsappUrl(CUSTOM_ORDER_MESSAGE)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex aspect-[4/5] flex-col justify-end rounded-2xl border-2 border-dashed border-primary/40 bg-primary/10 p-4 transition-all duration-500 hover:bg-primary/20 lg:rounded-3xl lg:p-6"
+                className="group w-[44%] shrink-0 snap-start rounded-3xl sm:w-auto"
               >
-                <span className="font-display text-2xl text-foreground lg:text-4xl">Regalos personalizados</span>
-                <span className="mt-1 text-xs font-bold uppercase tracking-[0.2em] text-primary-dark">
-                  Pedí el tuyo por WhatsApp →
-                </span>
+                <div className="relative flex aspect-[4/5] flex-col justify-end rounded-3xl bg-primary-light p-5 transition-colors group-hover:bg-primary lg:p-7">
+                  <Stitches className="inset-2.5 text-primary-dark/50" radius={16} />
+                  <p className="relative text-base font-semibold leading-snug text-foreground lg:text-lg">
+                    ¿No encontrás lo que buscás? Lo tejemos a partir de tu foto o idea.
+                  </p>
+                </div>
+                <h3 className="mt-3 font-display text-xl text-foreground group-hover:text-primary-dark lg:text-2xl">
+                  Regalos personalizados
+                </h3>
+                <p className="text-sm text-foreground-light">Pedilo por WhatsApp</p>
               </a>
-            </div>
-          </div>
-        </section>
-      ) : null}
-
-      {/* ─── FEATURED ─── */}
-      {featured.length > 0 ? (
-        <section className="py-12 lg:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-            <div className="mb-8 lg:mb-12">
-              <span className="text-xs font-bold uppercase tracking-widest text-primary-dark">Recién tejidos</span>
-              <h2 className="mt-2 font-display text-3xl font-bold text-foreground lg:text-4xl">Nuestras creaciones</h2>
-            </div>
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
-              {featured.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-            <div className="mt-8 flex justify-center lg:mt-10">
-              <Link
-                href="/tienda"
-                className="rounded-full border border-primary/30 bg-surface px-7 py-3 text-sm font-bold text-foreground transition hover:bg-primary/10"
-              >
-                Ver toda la tienda
-              </Link>
             </div>
           </div>
         </section>
       ) : null}
 
       {/* ─── HOW TO ORDER ─── */}
-      <section id="como-pedir" className="relative scroll-mt-20 overflow-hidden py-16 lg:py-24">
-        <div className="absolute inset-0 mx-4 rounded-[3rem] bg-gradient-to-b from-primary/5 via-primary/8 to-primary/5 lg:mx-0" />
-        <YarnBall className="absolute -bottom-16 -left-16 hidden h-48 w-48 text-primary opacity-30 lg:block" />
-
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-          <div className="mb-10 text-center lg:mb-16">
-            <span className="text-xs font-bold uppercase tracking-widest text-primary-dark">Proceso</span>
-            <h2 className="mt-2 font-display text-3xl font-bold text-foreground lg:text-4xl">Cómo hacer tu pedido</h2>
+      <section id="como-pedir" className="scroll-mt-20 bg-primary-light py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
+          <div className="max-w-2xl">
+            <h2 className="font-display text-3xl text-foreground lg:text-5xl">Cómo hacer tu pedido</h2>
+            <p className="mt-4 text-lg leading-relaxed text-foreground-light">
+              Todo se coordina por WhatsApp, directo conmigo. Sin formularios ni cuentas.
+            </p>
           </div>
 
-          <div className="flex flex-col gap-6 lg:flex-row lg:gap-10">
-            {steps.map((step, i) => (
-              <div
-                key={step.num}
-                className="relative flex-1 animate-fade-in-up rounded-2xl border border-primary/15 bg-surface/80 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 lg:rounded-3xl lg:p-8"
-                style={{ animationDelay: `${(i + 1) * 200}ms` }}
-              >
-                <div className="mb-4 flex items-center gap-4">
-                  <span className="font-display text-5xl font-black leading-none text-primary/25 lg:text-6xl">{step.num}</span>
-                  <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
+          <ol className="relative mt-12 grid gap-10 lg:mt-16 lg:grid-cols-3 lg:gap-12">
+            {steps.map((step, index) => (
+              <li key={step.title} className="relative flex gap-5 lg:block">
+                {/* The thread that runs from this step's number to the next one. */}
+                {index < steps.length - 1 ? (
+                  <>
+                    <StitchLine
+                      vertical
+                      className="absolute -bottom-8 left-[27px] top-16 w-px text-primary-dark/60 lg:hidden"
+                    />
+                    <StitchLine className="absolute -right-10 left-16 top-[27px] hidden h-px text-primary-dark/60 lg:block" />
+                  </>
+                ) : null}
+                <span className="relative flex size-14 shrink-0 items-center justify-center rounded-full bg-foreground font-display text-2xl text-white">
+                  {index + 1}
+                </span>
+                <div className="lg:mt-6">
+                  <h3 className="text-xl font-bold text-foreground lg:text-2xl">{step.title}</h3>
+                  <p className="mt-2 max-w-sm leading-relaxed text-foreground-light">{step.desc}</p>
                 </div>
-                <h3 className="mb-2 text-lg font-bold text-foreground lg:text-xl">{step.title}</h3>
-                <p className="text-sm font-medium leading-relaxed text-foreground-light lg:text-base">{step.desc}</p>
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
 
-          <div className="mt-10 flex justify-center">
-            <a
-              href={SOCIAL_LINKS.whatsapp}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 rounded-full bg-primary px-8 py-4 text-base font-bold text-foreground shadow-xl shadow-primary/25 transition-all hover:bg-primary-dark hover:text-white active:scale-95"
-            >
-              <SocialIcon network="whatsapp" />
-              Empezar mi pedido
-            </a>
+          <div className="mt-12 lg:mt-14">
+            <WhatsappButton>Empezar mi pedido</WhatsappButton>
           </div>
         </div>
       </section>
 
-      {/* ─── TESTIMONIAL / HIGHLIGHT ─── */}
-      <section className="py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-          <div className="relative overflow-hidden rounded-3xl bg-background-dark p-8 lg:rounded-[3rem] lg:p-16">
-            <div className="absolute right-0 top-0 h-64 w-64 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
-            <div className="absolute bottom-0 left-0 h-48 w-48 -translate-x-1/2 translate-y-1/2 rounded-full bg-primary/15 blur-2xl" />
-
-            <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-16">
-              <div className="space-y-6 lg:w-1/2">
-                <span className="inline-block rounded-full bg-primary/20 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary">
-                  Lo que dicen
-                </span>
-                <blockquote className="font-display text-2xl font-bold leading-snug text-white lg:text-4xl">
-                  &ldquo;Le regalé un amigurumi personalizado a mi hija y fue el regalo más especial que recibió. ¡La
-                  calidad es increíble!&rdquo;
-                </blockquote>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/30 text-sm font-bold text-primary">
-                    MC
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-white">María C.</p>
-                    <p className="text-xs text-white/50">Cliente feliz</p>
-                  </div>
-                </div>
-              </div>
-              <div className="flex gap-4 lg:w-1/2">
-                {heroImages.slice(1, 3).map((image, index) => (
-                  <div
-                    key={`${image.src}-${index}`}
-                    className={`relative aspect-[3/4] flex-1 overflow-hidden rounded-2xl ${index === 1 ? "translate-y-8" : ""}`}
-                  >
-                    <Image src={image.src} alt={image.alt} fill sizes="(min-width: 1024px) 25vw, 50vw" className="object-cover" />
-                  </div>
-                ))}
-              </div>
+      {/* ─── FEATURED ─── */}
+      {featured.length > 0 ? (
+        <section className="py-16 lg:py-24">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
+            <div className="mb-8 flex items-end justify-between gap-6 lg:mb-10">
+              <h2 className="font-display text-3xl text-foreground lg:text-5xl">Recién tejidos</h2>
+              <Link
+                href="/tienda"
+                className="shrink-0 text-sm font-bold text-primary-dark underline decoration-2 underline-offset-4 hover:text-foreground"
+              >
+                Ver toda la tienda
+              </Link>
             </div>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-10">
+              {featured.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {/* ─── CUSTOM ORDERS + TESTIMONIAL ─── */}
+      <section className="px-3 sm:px-6 lg:px-10">
+        <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-background-dark text-white lg:rounded-[3rem]">
+          <div className="grid gap-12 px-6 py-12 sm:px-10 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-16 lg:py-20">
+            <div>
+              <h2 className="font-display text-3xl leading-tight lg:text-5xl">¿Tenés una idea? Mandame una foto y la tejemos.</h2>
+              <p className="mt-5 max-w-lg text-lg leading-relaxed text-white/75">
+                Tu mascota en amigurumi, un ramo con los colores favoritos de alguien o un detalle para un baby shower.
+                Acordamos juntos el tamaño, los colores y cada detalle.
+              </p>
+              <WhatsappButton href={buildWhatsappUrl(CUSTOM_ORDER_MESSAGE)} tone="pink" className="mt-8">
+                Pedir una pieza personalizada
+              </WhatsappButton>
+            </div>
+
+            <figure className="relative rounded-3xl bg-white/[0.06] p-6 lg:p-8">
+              <blockquote className="text-xl font-medium leading-relaxed lg:text-2xl">
+                “Le regalé un amigurumi personalizado a mi hija y fue el regalo más especial que recibió. ¡La calidad es
+                increíble!”
+              </blockquote>
+              <figcaption className="mt-5 text-sm text-white/65">María C., clienta</figcaption>
+            </figure>
           </div>
         </div>
       </section>
 
       {/* ─── FAQ ─── */}
       <section id="preguntas-frecuentes" className="scroll-mt-20 py-16 lg:py-24">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-10">
-          <div className="mb-10 text-center lg:mb-14">
-            <span className="text-xs font-bold uppercase tracking-widest text-primary-dark">Preguntas frecuentes</span>
-            <h2 className="mt-2 font-display text-3xl font-bold text-foreground lg:text-4xl">
-              Todo sobre tu pedido de crochet
-            </h2>
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_1.6fr] lg:gap-16 lg:px-10">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <h2 className="font-display text-3xl text-foreground lg:text-5xl">Preguntas frecuentes</h2>
+            <p className="mt-4 max-w-sm text-lg leading-relaxed text-foreground-light">
+              ¿Tu duda no está acá?{" "}
+              <a
+                href={SOCIAL_LINKS.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold text-primary-dark underline decoration-2 underline-offset-4 hover:text-foreground"
+              >
+                Escribime por WhatsApp
+              </a>{" "}
+              y te respondo.
+            </p>
           </div>
 
-          <div className="space-y-3">
+          <div className="border-t border-foreground/15">
             {FAQS.map((faq, index) => (
-              <details
-                key={faq.question}
-                open={index === 0}
-                className="group rounded-2xl border border-primary/15 bg-surface/80 p-5 transition-colors open:border-primary/40 open:bg-surface lg:rounded-3xl lg:p-6"
-              >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-base font-bold text-foreground lg:text-lg [&::-webkit-details-marker]:hidden">
-                  <h3>{faq.question}</h3>
+              <details key={faq.question} open={index === 0} className="group border-b border-foreground/15">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-left [&::-webkit-details-marker]:hidden">
+                  <h3 className="text-lg font-bold text-foreground lg:text-xl">{faq.question}</h3>
                   <span
                     aria-hidden="true"
-                    className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary-dark transition-transform group-open:rotate-45"
+                    className="flex size-9 shrink-0 items-center justify-center rounded-full bg-pink-light text-xl leading-none text-foreground transition-transform group-open:rotate-45"
                   >
                     +
                   </span>
                 </summary>
-                <p className="mt-3 text-sm font-medium leading-relaxed text-foreground-light lg:text-base">{faq.answer}</p>
+                <p className="max-w-2xl pb-6 leading-relaxed text-foreground-light lg:text-lg">{faq.answer}</p>
               </details>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ─── CONTACT ─── */}
-      <section id="contacto" className="scroll-mt-20 py-16 lg:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-          <div className="mx-auto mb-10 max-w-2xl space-y-4 text-center lg:mb-14">
-            <span className="text-xs font-bold uppercase tracking-widest text-primary-dark">Contacto</span>
-            <h2 className="font-display text-3xl font-bold text-foreground lg:text-5xl">¿Tenés una idea en mente?</h2>
-            <p className="text-base font-medium text-foreground-light lg:text-lg">
-              Dale vida con hilo y aguja. Contame qué te gustaría y lo hacemos realidad juntos.
-            </p>
-          </div>
+      {/* ─── CONTACT: closes the page with the same pink patch as the hero ─── */}
+      <section id="contacto" className="scroll-mt-20 px-3 pb-16 sm:px-6 lg:px-10 lg:pb-24">
+        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-pink lg:rounded-[3rem]">
+          <Stitches className="inset-2.5 text-white lg:inset-4" radius={26} />
+          <div className="relative flex flex-col gap-10 px-6 py-12 sm:px-10 lg:flex-row lg:items-end lg:justify-between lg:px-16 lg:py-20">
+            <div className="max-w-2xl">
+              <h2 className="font-display text-4xl leading-tight text-foreground lg:text-6xl">Escribime y empezamos tu pedido</h2>
+              <p className="mt-5 text-lg leading-relaxed text-foreground/80">
+                Te respondo por WhatsApp al {SOCIAL_LABELS.whatsapp.handle}. También podés ver lo último que tejí en mis
+                redes.
+              </p>
+            </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-            {contactNetworks.map(({ network, cta }) => (
-              <a
-                key={network}
-                href={SOCIAL_LINKS[network]}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`group flex items-center gap-4 rounded-2xl border p-5 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 lg:flex-col lg:items-start lg:rounded-3xl lg:p-7 ${
-                  network === "whatsapp" ? "border-primary/40 bg-primary/15" : "border-primary/15 bg-surface"
-                }`}
-              >
-                <span
-                  className={`flex size-12 shrink-0 items-center justify-center rounded-full ${
-                    network === "whatsapp" ? "bg-[#25D366] text-white" : "bg-primary/20 text-foreground"
-                  }`}
-                >
-                  <SocialIcon network={network} className="h-6 w-6" />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-lg font-bold text-foreground">{SOCIAL_LABELS[network].name}</span>
-                  <span className="block truncate text-sm text-foreground-light">{SOCIAL_LABELS[network].handle}</span>
-                  <span className="mt-2 hidden text-sm font-bold text-primary-dark transition group-hover:translate-x-1 lg:inline-block">
-                    {cta} →
-                  </span>
-                </span>
-              </a>
-            ))}
+            <div className="flex flex-col gap-4 lg:items-end">
+              <WhatsappButton>Escribir por WhatsApp</WhatsappButton>
+              <ul className="flex flex-wrap gap-2">
+                {otherNetworks.map((network) => (
+                  <li key={network}>
+                    <a
+                      href={SOCIAL_LINKS[network]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-bold text-foreground transition-colors hover:bg-pink-light"
+                    >
+                      <SocialIcon network={network} className="size-4" />
+                      {SOCIAL_LABELS[network].name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>

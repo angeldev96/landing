@@ -10,10 +10,10 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-20 lg:px-10">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-          <div className="relative flex size-10 items-center justify-center overflow-hidden rounded-full border border-primary/30 bg-primary/20 lg:size-12">
+          <div className="relative flex size-10 items-center justify-center overflow-hidden rounded-full bg-pink lg:size-12">
             <Image src="/android-chrome-512x512.png" alt="Logo Crochet CasRey" fill sizes="48px" className="object-cover" />
           </div>
-          <span className="text-lg font-extrabold tracking-tight text-foreground lg:text-xl">Crochet CasRey</span>
+          <span className="font-display text-xl text-foreground lg:text-2xl">Crochet CasRey</span>
         </Link>
 
         {/* Desktop nav */}
@@ -23,7 +23,7 @@ export function SiteHeader() {
               <div key={link.label} className="group relative">
                 <Link
                   href={link.href}
-                  className="flex items-center gap-1 py-2 text-sm font-semibold text-foreground-light transition-colors hover:text-primary-dark"
+                  className="flex items-center gap-1 py-2 text-[15px] font-semibold text-foreground/75 transition-colors hover:text-foreground"
                 >
                   {link.label}
                   <svg className="h-3.5 w-3.5 transition-transform group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -48,7 +48,7 @@ export function SiteHeader() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="py-2 text-sm font-semibold text-foreground-light transition-colors hover:text-primary-dark"
+                className="py-2 text-[15px] font-semibold text-foreground/75 transition-colors hover:text-foreground"
               >
                 {link.label}
               </Link>
@@ -58,7 +58,7 @@ export function SiteHeader() {
             href={SOCIAL_LINKS.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-2 flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-foreground shadow-lg shadow-primary/20 transition-all hover:bg-primary-dark hover:text-white hover:shadow-primary-dark/30"
+            className="ml-2 flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-primary-dark"
           >
             <SocialIcon network="whatsapp" className="h-4 w-4" />
             Escribime

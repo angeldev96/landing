@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Caprasimo, Figtree } from "next/font/google";
 import "./globals.css";
 import {
   DEFAULT_OG_IMAGE,
@@ -12,19 +12,19 @@ import {
   SITE_URL,
 } from "@/lib/seo";
 
-// Cheeky Rabbit ships blank glyphs for accented letters (á, é, ñ, ¿...), so it is limited to
-// basic Latin and those characters fall back to a rounded system font instead of disappearing.
-const cheekyRabbit = localFont({
-  src: "../fonts/Cheeky Rabbit.ttf",
-  variable: "--font-cheeky-rabbit",
-  declarations: [{ prop: "unicode-range", value: "U+0020-007E" }],
-  adjustFontFallback: false,
-  fallback: ["ui-rounded", "Arial Rounded MT Bold", "sans-serif"],
+// Caprasimo: chubby, soft display face for headlines (reads like a stuffed amigurumi).
+// Figtree: clear humanist sans for body text and UI. Both cover Spanish accents, ñ, ¿ and ¡.
+const display = Caprasimo({
+  subsets: ["latin", "latin-ext"],
+  weight: "400",
+  variable: "--font-caprasimo",
+  display: "swap",
 });
 
-const creamySauce = localFont({
-  src: "../fonts/Creamy Sauce.otf",
-  variable: "--font-creamy-sauce",
+const sans = Figtree({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-figtree",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -78,7 +78,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang={SITE_LANGUAGE}>
-      <body className={`${cheekyRabbit.variable} ${creamySauce.variable} antialiased`}>
+      <body className={`${display.variable} ${sans.variable} antialiased`}>
         {children}
       </body>
     </html>
