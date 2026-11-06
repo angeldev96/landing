@@ -1349,6 +1349,16 @@ body > main:not(.home) {
 .closing__legal p {
   margin: 0;
 }
+.closing__credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 150ms ease;
+}
+.closing__credit a:hover,
+.closing__credit a:focus-visible {
+  color: var(--primary-dark);
+}
 @media (max-width: 1023px) {
   .channels {
     grid-template-columns: repeat(2, minmax(0, 1fr));
