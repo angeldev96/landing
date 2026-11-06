@@ -42,3 +42,6 @@ next-env.d.ts
 
 # turborepo
 .turbo
+skills-lock.json
+.agents/*
+.claude/skills/
