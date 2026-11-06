@@ -6,6 +6,10 @@ import { SocialIcon } from "@/components/site/social-icon";
 const NETWORKS: SocialNetwork[] = ["whatsapp", "instagram", "facebook", "tiktok"];
 
 export function SiteFooter() {
+  // Server Component: renders once per request on the server, so reading the clock is safe here.
+  // oxlint-disable-next-line react/purity
+  const year = new Date().getFullYear();
+
   return (
     <footer className="relative mt-8 rounded-t-[2rem] bg-background-dark text-white lg:rounded-t-[4rem]">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-10 lg:py-20">
@@ -71,7 +75,7 @@ export function SiteFooter() {
 
         {/* Bottom bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 sm:flex-row lg:mt-16">
-          <p className="text-xs text-white/30">© {new Date().getFullYear()} Crochet CasRey · Honduras. Hecho con amor 💜</p>
+          <p className="text-xs text-white/30">© {year} Crochet CasRey · Honduras. Hecho con amor 💜</p>
           <div className="flex items-center gap-1">
             {[...Array(5)].map((_, i) => (
               <svg key={i} className="h-4 w-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
