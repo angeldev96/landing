@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useEffect, useState } from "react";
+import { startTransition, useState } from "react";
 import {
   addProductImageAction,
   deleteProductAction,
@@ -62,14 +62,6 @@ export function AdminDashboard({ initialProducts, adminName, adminEmail }: Dashb
   const [markAsCover, setMarkAsCover] = useState(true);
 
   const selectedProduct = products.find((product) => product.id === selectedId) ?? null;
-
-  useEffect(() => {
-    if (!selectedProduct) {
-      return;
-    }
-
-    setForm(productToForm(selectedProduct));
-  }, [selectedProduct]);
 
   function syncProducts(nextProducts: AdminProduct[], nextSelectedId?: string | null) {
     setProducts(nextProducts);
