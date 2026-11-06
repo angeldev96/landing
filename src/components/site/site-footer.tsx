@@ -109,6 +109,12 @@ export function SiteFooter() {
           <div className="closing__legal">
             <p>© {year} Crochet CasRey, tejido a mano en Honduras.</p>
             <p>WhatsApp, Facebook, TikTok e Instagram son marcas de sus dueños.</p>
+            <p className="closing__credit">
+              Sitio hecho por{" "}
+              <a href="https://angelvalladares.dev" target="_blank" rel="noopener">
+                angelvalladares.dev
+              </a>
+            </p>
           </div>
         </div>
       </div>
