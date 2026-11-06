@@ -28,24 +28,23 @@ export function ResourceHub({
   const emptyGroups = groups.filter((group) => group.articles.length === 0);
 
   return (
-    <main className="pb-16">
-      <section className="relative overflow-hidden border-b border-primary/10 bg-background-dark text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(195,180,253,0.22),_transparent_36%),radial-gradient(circle_at_bottom_right,_rgba(251,191,36,0.14),_transparent_26%)]" />
-        <div className="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-10 lg:py-16">
+    <main className="pb-16" id="contenido">
+      <section className="relative overflow-hidden bg-pink text-foreground">
+        <div className="wrap relative py-10 lg:py-16">
           <div className="max-w-3xl space-y-4">
-            <p className="text-xs font-bold uppercase tracking-[0.32em] text-primary">{eyebrow}</p>
+            <p className="text-sm font-semibold text-foreground/80">{eyebrow}</p>
             <h1 className="font-display text-5xl leading-none sm:text-6xl lg:text-7xl">{title}</h1>
-            <p className="max-w-2xl text-base leading-relaxed text-white/70 sm:text-lg">{intro}</p>
+            <p className="max-w-2xl text-base leading-relaxed text-foreground/80 sm:text-lg">{intro}</p>
           </div>
           <div className="mt-8 flex flex-wrap gap-2">
             {groups.map(({ section, articles: sectionArticles }) => (
               <a
                 key={section.id}
                 href={`#${section.id}`}
-                className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm font-bold text-white/75 transition hover:bg-white/10"
+                className="inline-flex items-center gap-2 rounded-full border border-foreground/20 bg-background px-4 py-2 text-sm font-bold text-foreground transition hover:bg-pink-light"
               >
                 {section.title}
-                <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-white/60">
+                <span className="rounded-full bg-pink-light px-2 py-0.5 text-xs text-foreground/70">
                   {sectionArticles.length || "pronto"}
                 </span>
               </a>
@@ -54,7 +53,7 @@ export function ResourceHub({
         </div>
       </section>
 
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-10 lg:py-16">
+      <div className="wrap py-10 lg:py-16">
         {filledGroups.length ? (
           <div className="space-y-14 lg:space-y-20">
             {filledGroups.map(({ section, articles: sectionArticles }) => (

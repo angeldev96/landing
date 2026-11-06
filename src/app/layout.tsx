@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Caprasimo, Figtree } from "next/font/google";
+import { Figtree, Fraunces } from "next/font/google";
 import "./globals.css";
+import "./motion.css";
 import {
   DEFAULT_OG_IMAGE,
   SITE_DESCRIPTION,
@@ -12,12 +13,12 @@ import {
   SITE_URL,
 } from "@/lib/seo";
 
-// Caprasimo: chubby, soft display face for headlines (reads like a stuffed amigurumi).
-// Figtree: clear humanist sans for body text and UI. Both cover Spanish accents, ñ, ¿ and ¡.
-const display = Caprasimo({
+// Fraunces (soft, warm serif) for headlines and Figtree (clear humanist sans) for text: the pairing
+// tasteskill dealt for a product page. Both cover Spanish accents, ñ, ¿ and ¡.
+const display = Fraunces({
   subsets: ["latin", "latin-ext"],
-  weight: "400",
-  variable: "--font-caprasimo",
+  axes: ["SOFT", "WONK", "opsz"],
+  variable: "--font-fraunces",
   display: "swap",
 });
 
@@ -69,6 +70,8 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
+  // tasteskill page metadata: a physical product brand (handmade crochet), site-kind other.
+  other: { "page-type": "product", "site-kind": "other" },
 };
 
 export default function RootLayout({
@@ -77,8 +80,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang={SITE_LANGUAGE}>
-      <body className={`${display.variable} ${sans.variable} antialiased`}>
+    <html
+      lang={SITE_LANGUAGE}
+      className={`${display.variable} ${sans.variable}`}
+      data-type="product"
+      data-radius="soft"
+      data-buttons="arrow"
+      data-motion=""
+    >
+      <body className="antialiased">
         {children}
       </body>
     </html>

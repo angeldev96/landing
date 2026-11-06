@@ -1,15 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ViewTransition } from "react";
 import { buildStoragePublicUrl, type ProductDetailImage } from "@/lib/crochet-landing";
 
 type ProductDetailGalleryProps = {
   productName: string;
+  // The name the product's cards give its photograph, so the card's photograph lands here.
+  transitionName: string;
   images: ProductDetailImage[];
 };
 
-export function ProductDetailGallery({ productName, images }: ProductDetailGalleryProps) {
+export function ProductDetailGallery({ productName, transitionName, images }: ProductDetailGalleryProps) {
   const [activeId, setActiveId] = useState(images[0]?.id ?? null);
+  // Only a tapped thumbnail fades in; the first photograph is in place at once (and is what the card's
+  // photograph travels to).
+  const [swapped, setSwapped] = useState(false);
   const activeImage = images.find((image) => image.id === activeId) ?? images[0] ?? null;
 
   if (!activeImage) {
@@ -22,16 +27,20 @@ export function ProductDetailGallery({ productName, images }: ProductDetailGalle
 
   return (
     <div className="space-y-4">
-      <div className="overflow-hidden rounded-[2.3rem] border border-primary/15 bg-surface shadow-2xl shadow-primary/10">
-        <div className="relative aspect-[4/5] bg-primary/10">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={buildStoragePublicUrl(activeImage.storagePath)}
-            alt={activeImage.altText ?? productName}
-            className="h-full w-full object-cover"
-          />
+      <ViewTransition name={transitionName} share="morph" default="none">
+        <div className="overflow-hidden rounded-[2.3rem] border border-primary/15 bg-surface shadow-2xl shadow-primary/10">
+          <div className="relative aspect-[4/5] bg-primary/10">
+            {/* Keyed by photo, so each tapped thumbnail fades in again. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              key={activeImage.id}
+              src={buildStoragePublicUrl(activeImage.storagePath)}
+              alt={activeImage.altText ?? productName}
+              className={`${swapped ? "photo-swap " : ""}h-full w-full object-cover`}
+            />
+          </div>
         </div>
-      </div>
+      </ViewTransition>
 
       {images.length > 1 ? (
         <div className="grid grid-cols-4 gap-3 sm:grid-cols-5">
@@ -42,7 +51,10 @@ export function ProductDetailGallery({ productName, images }: ProductDetailGalle
               <button
                 key={image.id}
                 type="button"
-                onClick={() => setActiveId(image.id)}
+                onClick={() => {
+                  setActiveId(image.id);
+                  setSwapped(true);
+                }}
                 className={`overflow-hidden rounded-[1.2rem] border transition ${
                   isActive
                     ? "border-primary/60 ring-2 ring-primary/30"

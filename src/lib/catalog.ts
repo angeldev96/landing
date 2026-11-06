@@ -3,7 +3,13 @@ import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/database.types";
 import { parseGalleryPageData, parseProductDetail, type GalleryPageProduct } from "@/lib/crochet-landing";
 import { decodeSlug } from "@/lib/slug";
-import { OTHER_CATEGORY, STORE_CATEGORIES, resolveCategory, type StoreCategory } from "@/lib/categories";
+import {
+  CATEGORY_COVER_SLUGS,
+  OTHER_CATEGORY,
+  STORE_CATEGORIES,
+  resolveCategory,
+  type StoreCategory,
+} from "@/lib/categories";
 
 // The gallery RPC caps page size, so the full catalog is read page by page.
 const CATALOG_PAGE_SIZE = 24;
@@ -18,7 +24,8 @@ export type CatalogGroup = {
   products: CatalogProduct[];
 };
 
-export async function getCatalogProducts(): Promise<CatalogProduct[]> {
+// Cached per request: the header's shop panel and the page read the same catalog with one set of RPC calls.
+export const getCatalogProducts = cache(async (): Promise<CatalogProduct[]> => {
   const supabase = await createClient();
   const products: CatalogProduct[] = [];
 
@@ -42,6 +49,21 @@ export async function getCatalogProducts(): Promise<CatalogProduct[]> {
   }
 
   return products;
+});
+
+// The header and the home page degrade to their photo-less state when the catalog can't be read.
+export async function getCatalogProductsSafe(): Promise<CatalogProduct[]> {
+  try {
+    return await getCatalogProducts();
+  } catch {
+    return [];
+  }
+}
+
+// The view-transition name a product's photograph carries on every card and on its own page, so it
+// travels from the card to the page when the visitor opens it.
+export function productTransitionName(productId: string) {
+  return `product-${productId}`;
 }
 
 export function groupByCategory(products: CatalogProduct[]): CatalogGroup[] {
@@ -49,6 +71,15 @@ export function groupByCategory(products: CatalogProduct[]): CatalogGroup[] {
     category,
     products: products.filter((product) => product.category.slug === category.slug),
   }));
+}
+
+// One photograph stands for each category wherever the category is shown (the shop panel in the header,
+// the category tiles on the home page): the product named in CATEGORY_COVER_SLUGS, else its first photo.
+export function categoryCover(group: CatalogGroup) {
+  const preferred = CATEGORY_COVER_SLUGS[group.category.slug];
+  const withCover = group.products.filter((product) => product.coverPath);
+
+  return withCover.find((product) => product.slug === preferred) ?? withCover[0] ?? null;
 }
 
 // Cached per request so generateMetadata and the product page share one RPC call.

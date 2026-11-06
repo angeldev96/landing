@@ -105,7 +105,7 @@ export function ArticleView({ article }: { article: Article }) {
   );
 
   return (
-    <main className="pb-16">
+    <main className="pb-16" id="contenido">
       <JsonLd
         data={[
           articleJsonLd({

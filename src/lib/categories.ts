@@ -58,6 +58,16 @@ export const STORE_CATEGORIES: StoreCategory[] = [
   },
 ];
 
+// The product whose cover photo stands for each category (by product slug). A slug that is no longer
+// published falls back to the category's first photo, so the owner can rename products freely.
+export const CATEGORY_COVER_SLUGS: Record<string, string> = {
+  amigurumis: "Vaquitas_minis",
+  flores: "TULIPS_NENIS",
+  bolsos: "CORAL",
+  cojines: "Pinguino",
+  "ropa-de-bebe": "Set_Aguacate",
+};
+
 export const OTHER_CATEGORY: StoreCategory = {
   slug: "otros",
   name: "Más creaciones",
