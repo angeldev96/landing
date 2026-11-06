@@ -1,0 +1,26 @@
+{
+  "$schema": "./node_modules/turbo/schema.json",
+  "ui": "stream",
+  "tasks": {
+    "build": {
+      "inputs": ["$TURBO_DEFAULT$", ".env*", "!README.md", "!supabase/**", "!.oxlintrc.json"],
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": [
+        "NEXT_PUBLIC_*",
+        "GOOGLE_SITE_VERIFICATION",
+        "BING_SITE_VERIFICATION",
+        "VERCEL_ENV"
+      ]
+    },
+    "lint": {
+      "inputs": ["$TURBO_DEFAULT$", "!README.md", "!supabase/**"]
+    },
+    "typecheck": {
+      "inputs": ["$TURBO_DEFAULT$", "!README.md", "!supabase/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

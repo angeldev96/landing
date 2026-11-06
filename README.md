@@ -2,23 +2,27 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+This project uses [Bun](https://bun.sh) as its package manager (see `packageManager` in `package.json`).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+bun install
 bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tooling
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Task | Command | Tool |
+| --- | --- | --- |
+| Lint | `bun run lint` (`lint:fix` to autofix) | [Oxlint](https://oxc.rs) — Next.js, React/React Compiler, a11y and TS rules in `.oxlintrc.json` |
+| Typecheck | `bun run typecheck` | TypeScript 7 (native compiler) |
+| Build | `bun run build` | Next.js + Turbopack |
+| Everything | `bun run check` | [Turborepo](https://turborepo.com) runs lint, typecheck and build in parallel and caches the results |
+
+On Vercel, `vercel.json` installs with `bun install --frozen-lockfile` and builds with `turbo run build lint`. Vercel enables Turborepo Remote Cache automatically, so a deploy whose inputs did not change (e.g. a redeploy, or a commit that only touches `README.md` or `supabase/`) restores the previous build instead of rebuilding.
+
+If you add a new environment variable that affects the build, add it to `tasks.build.env` in `turbo.json` (variables starting with `NEXT_PUBLIC_` are already covered). Turborepo runs in strict env mode, so undeclared variables are hidden from the build and do not invalidate the cache.
 
 ## Learn More
 
