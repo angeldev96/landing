@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProductDetailGallery } from "@/components/gallery/product-detail-gallery";
 import { buildStoragePublicUrl, type ProductDetail } from "@/lib/crochet-landing";
-import { getProductDetail } from "@/lib/catalog";
+import { getProductDetail, productTransitionName } from "@/lib/catalog";
 import { categoryHref, resolveCategory } from "@/lib/categories";
 import { SOCIAL_LINKS, buildWhatsappUrl } from "@/lib/site";
 import { breadcrumbJsonLd, pageMetadata, productJsonLd, toDescription } from "@/lib/seo";
@@ -58,7 +58,7 @@ export default async function ProductDetailPage({ params }: Params) {
   const whatsappUrl = buildWhatsappUrl(`¡Hola Crochet CasRey! Me interesa "${product.name}" que vi en la tienda 🧶`);
 
   return (
-    <main className="pb-16">
+    <main className="pb-16" id="contenido">
       <JsonLd
         data={[
           productJsonLd({
@@ -76,7 +76,7 @@ export default async function ProductDetailPage({ params }: Params) {
         ]}
       />
       <section className="border-b border-primary/10 bg-surface/60">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 sm:px-6 lg:px-10">
+        <div className="wrap flex flex-col gap-4 py-6">
           <nav aria-label="Ruta de navegación" className="flex flex-wrap items-center gap-2 text-sm font-bold text-foreground-light">
             <Link href="/tienda" className="rounded-full border border-primary/20 bg-surface px-4 py-2 text-foreground transition hover:bg-primary/10">
               ← Tienda
@@ -97,8 +97,12 @@ export default async function ProductDetailPage({ params }: Params) {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-10 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:px-10 lg:py-12">
-        <ProductDetailGallery productName={product.name} images={product.images} />
+      <section className="wrap grid gap-10 py-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:py-12">
+        <ProductDetailGallery
+          productName={product.name}
+          transitionName={productTransitionName(product.id)}
+          images={product.images}
+        />
 
         <div className="space-y-6">
           <div className="rounded-[2.2rem] border border-primary/15 bg-surface/85 p-6 shadow-xl shadow-primary/5 backdrop-blur-xl">
@@ -135,6 +139,7 @@ export default async function ProductDetailPage({ params }: Params) {
               <div className="flex flex-col gap-3 sm:flex-row">
                 <a
                   href={whatsappUrl}
+                  data-main-cta
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-foreground transition hover:bg-primary-dark hover:text-white"

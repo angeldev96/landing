@@ -1,14 +1,24 @@
+import { ViewTransition } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { buildStoragePublicUrl } from "@/lib/crochet-landing";
-import { getCatalogProducts, groupByCategory, type CatalogProduct } from "@/lib/catalog";
+import { displayProductName, getCatalogProductsSafe, productTransitionName, type CatalogProduct } from "@/lib/catalog";
 import { categoryHref } from "@/lib/categories";
-import { FAQS, SOCIAL_LABELS, SOCIAL_LINKS, buildWhatsappUrl, type SocialNetwork } from "@/lib/site";
+import { planHomePhotos } from "@/lib/home-photos";
+import {
+  CUSTOM_ORDER_MESSAGE,
+  FAQS,
+  LEARN_SECTIONS,
+  MAIN_ACTION_LABEL,
+  PATTERN_SECTIONS,
+  SOCIAL_LINKS,
+  buildWhatsappUrl,
+} from "@/lib/site";
 import { SITE_DESCRIPTION, SITE_TITLE, collectionPageJsonLd, faqJsonLd, pageMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/seo/json-ld";
-import { ProductCard } from "@/components/site/product-card";
 import { SocialIcon } from "@/components/site/social-icon";
+import { WallPause } from "@/components/site/wall-pause";
 
 export const metadata: Metadata = pageMetadata({
   title: SITE_TITLE,
@@ -17,147 +27,92 @@ export const metadata: Metadata = pageMetadata({
   absoluteTitle: true,
 });
 
-/* ─── Fallback images (used when the catalog can't be loaded) ─── */
-const fallbackImages = [
+/*
+ * tasteskill plan (product, site-kind other)
+ * deal: hero photo (the catalog as a full-bleed wall, the words in a solid box) · palette brand
+ * (paper, plum-brown ink, rose action, logo pink band) · type Fraunces / Figtree · radius soft ·
+ * nav-split · footer-columns · close-type · rhythm brand-band · buttons arrow
+ * 1 inicio          the catalog wall, h1, the main action                      1 screen
+ * 2 categorias      five categories and the whole shop, six photo tiles (3 x 2)  1 screen
+ * 3 recien          the four newest pieces                                     1 screen
+ * 4 como-pedir      three steps beside one photograph (the page's split)       1 screen
+ * 5 personalizados  custom gifts on the brand band, three photographs (trio)   1 screen
+ * 6 aprende         patterns and lessons, two linked cards                     1 screen
+ * 7 preguntas       four questions, open, beside one photograph               1 screen
+ * footer.closing    contact: the main action set large, the four channels      1 screen (2 on a phone)
+ * motion (the client asked for a livelier page, past tasteskill's hover-only rule for shops): the hero
+ * wall drifts with a pause button, blocks rise in on scroll, large photographs drift in their frames,
+ * a product's photograph travels into its page. All of it rests under reduced motion.
+ */
+
+const HOME_FAQ_QUESTIONS = [
+  "¿Cuánto cuesta una pieza de crochet?",
+  "¿Cuánto tarda en estar listo un pedido?",
+  "¿Hacen envíos?",
+  // The fourth answer shows from 640px up (a phone screen holds three).
+  "¿Puedo pedir un amigurumi o regalo de crochet personalizado?",
+];
+
+const STEPS = [
   {
-    src: "https://lh3.googleusercontent.com/aida-public/AB6AXuDU9qIUSMfJ0BHbxCddEahL3U44sT2cDcXtNzigC_e5gAQotBA8Av_WcWRYBEA-ZWYeFmvSfN_WZAHDPXbQRNg15-HnDolbyl_xaHGFK0UG5xb3CA8AOAX8vl5cTcinZ-1IGz_Hhry9d7oTgV36RKBz2AfBRCxkA_SHkK3yz--EABpkcX48k8P43LijMrNIUH4RMjJYSeV0TnZOlm0EhZRigyHNCaCGj8hI6Hv2IBLuPa38p7wEZaLIhT_E3-fXogqFW7seRosWAA",
-    alt: "Amigurumi hecho a mano",
-    href: "/tienda",
+    title: "Elegí una pieza o mandá tu idea",
+    desc: "Mirá la tienda o enviá por WhatsApp una foto de lo que te gustaría.",
   },
   {
-    src: "https://lh3.googleusercontent.com/aida-public/AB6AXuAMpHDTmSNzyAZdcjQhOjazwz-w2Afr3UCUfFx9S2BudTfzTaefWQBxR0x0rCMwx1vy_-7RkQiOxQgJo4WmGlX4-Ar8f6EZB0Gk0bJ4hEZKEmBB7eb3h4zj5KBjoAlRVda6yPARRU04x5ddPidFwax8MMUpWqhZKt8tehNF4ARQ39KQP2T1z9nLG67UV58iHx-N0cz9YlzhWSN8hZwhssQwPQF0k-0kmWBzvyqz34hluHk-EAA8reyfxNymCF9wlAd5A64HRqy3HA",
-    alt: "Pop Style Star amigurumi",
-    href: "/tienda",
+    title: "Acordamos detalles y precio",
+    desc: "Definimos tamaño, colores y precio, y reservás con un pequeño anticipo.",
   },
   {
-    src: "https://lh3.googleusercontent.com/aida-public/AB6AXuBqNcYRfb46-_BeY_Qc6zig2WS0PPxJi963j_lX-IzbZFxDyVRNSosRrFc9ZlkDsQGd34R5ZeZOFf4w_4DrwbhyczilFWZ8FKi4wsniTU0u8Q2ZSSsQD0Pfpypi64piz774aPChNsmzHs3rEdC8352krmfvUCraruerwh1qnsqEm8_wkfYb2Knu_TftufT9sCBdJ7GOMQBwUqz-9-wDMCQXgFutjHdRzRpN9OUNmZ4RwQXPqo-Ry38aZUPmshH0CmzYxhJw52XAjQ",
-    alt: "Conejito Soft amigurumi",
-    href: "/tienda",
-  },
-  {
-    src: "https://lh3.googleusercontent.com/aida-public/AB6AXuAjsz4o5X71MIq4j5lzcjKnk9DY1R5y25QV6nVSw0uwv9Mlcj3NiwSQa_cwwOTdZHzWar0yq8uvLJ2sgF5BIOM1_c0F2gQ72Dt5PzXOynk88RAguqb1CaSEyiT4ugwE6_R6D9X6vW5XONNTrhsOwcBDjw9Lsav57VkYNkKmDgvAk-1W0MDRBsuThjYyHzytGWu9W0xdWpwL3XGmLNjr9Zei1p0FjxppgRoUq28f8BhjJa3aQJPHB5lCzdZ3Pz9VyDxu7JtZ-NDkYg",
-    alt: "Muñeca personalizada crochet",
-    href: "/tienda",
-  },
-  {
-    src: "https://lh3.googleusercontent.com/aida-public/AB6AXuCaNRG3XeoMVcYODhOhzOk1Kep9xN68dcOse_KbyNZ7-ORH_UpoIN0n3pMfsY8C-fXYdZ7hLQ5mrE6pXivsoq8JOTb3rxZjLGYu8K7rZbmtQbzNor32bIabohwDKUQPHTFV0oUyiUrDqqhrMNw5pwPIjqFVE-HBkpzUHhv0S9ccYABuqDLZEbwfaMA-FLwPLb7F2axMkWgCcs3E0PJWlMDJKgBPkUV82JxiaO65_LNN0sInNRfhu5KZPuJ7HOHfZqvIzi5uUJnEXg",
-    alt: "Flores eternas de crochet",
-    href: "/tienda",
+    title: "Recibí tu pedido",
+    desc: "Te avisamos cuando está listo y coordinamos la entrega o el envío.",
   },
 ];
 
-const HERO_IMAGE_COUNT = 5;
-const FEATURED_COUNT = 8;
+// The hero wall: 7 columns at 1440 (fewer columns on narrower screens, see globals.css), 3 rows tall on
+// desktop and 4 under 1024px. Each column holds HERO_ROWS photographs, at least as many as the rows on
+// screen, so its loop never shows a gap. Column 0 sits on the right, where the words never cover it.
+// A short catalog repeats its photographs so every column still holds a full set.
+const HERO_COLUMNS = 7;
+const HERO_ROWS = 4;
+const HERO_PRIORITY_ROWS = 3;
 
-async function loadCatalog() {
-  try {
-    return await getCatalogProducts();
-  } catch {
-    return [];
-  }
-}
-
-// Picks one product per category first so the cover shows the variety of the catalog.
-function pickHeroProducts(products: CatalogProduct[]) {
-  const withCover = products.filter((product) => product.coverPath);
-  const picked: CatalogProduct[] = [];
-
-  for (const product of withCover) {
-    if (!picked.some((item) => item.category.slug === product.category.slug)) {
-      picked.push(product);
-    }
-  }
-
-  for (const product of withCover) {
-    if (picked.length >= HERO_IMAGE_COUNT) break;
-    if (!picked.includes(product)) picked.push(product);
-  }
-
-  return picked.slice(0, HERO_IMAGE_COUNT);
-}
-
-const steps = [
-  {
-    num: "01",
-    title: "Elegí tu pieza",
-    desc: "Mirá la tienda o enviame por WhatsApp una foto o referencia de lo que te gustaría que tejiera. Cualquier idea puede convertirse en un pedido único.",
-  },
-  {
-    num: "02",
-    title: "Presupuesto y anticipo",
-    desc: "Acordamos detalles, tamaño, colores y precio. Se reserva con un pequeño anticipo.",
-  },
-  {
-    num: "03",
-    title: "Pedido listo",
-    desc: "Te aviso cuando tu pedido esté terminado para ser entregado o enviado a donde quieras.",
-  },
-];
-
-const contactNetworks: { network: SocialNetwork; cta: string }[] = [
-  { network: "whatsapp", cta: "Escribime" },
-  { network: "instagram", cta: "Seguime" },
-  { network: "facebook", cta: "Visitame" },
-  { network: "tiktok", cta: "Mirá mis videos" },
-];
-
-/* ─── SVG decorations ─── */
-function YarnBall({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="60" cy="60" r="50" fill="currentColor" opacity="0.12" />
-      <circle cx="60" cy="60" r="50" stroke="currentColor" strokeWidth="2" opacity="0.25" />
-      <path
-        d="M30 60C30 60 45 30 60 30C75 30 90 60 90 60C90 60 75 90 60 90C45 90 30 60 30 60Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        opacity="0.2"
-      />
-      <path d="M60 10C60 10 30 45 30 60C30 75 60 110 60 110" stroke="currentColor" strokeWidth="1.5" opacity="0.15" />
-      <path d="M60 10C60 10 90 45 90 60C90 75 60 110 60 110" stroke="currentColor" strokeWidth="1.5" opacity="0.15" />
-    </svg>
+function heroColumns(products: CatalogProduct[]) {
+  return Array.from({ length: HERO_COLUMNS }, (_, col) =>
+    Array.from({ length: HERO_ROWS }, (_, row) => products[(col * HERO_ROWS + row) % products.length]),
   );
 }
 
-// Collage cells: one big tile and four small ones.
-const collageCells = [
-  "col-span-2 row-span-2",
-  "col-start-3 row-start-1",
-  "col-start-3 row-start-2",
-  "col-start-1 row-start-3",
-  "col-span-2 col-start-2 row-start-3",
-];
+function piezas(count: number) {
+  return `${count} pieza${count === 1 ? "" : "s"}`;
+}
 
-/* ─── Page ─── */
+function productPhoto(product: CatalogProduct) {
+  return {
+    src: buildStoragePublicUrl(product.coverPath),
+    alt: product.coverAlt ?? `${displayProductName(product.name)}, crochet hecho a mano`,
+    href: `/tienda/${product.slug}`,
+  };
+}
+
 export default async function Home() {
-  const products = await loadCatalog();
-  const heroProducts = pickHeroProducts(products);
-  const heroImages =
-    heroProducts.length >= HERO_IMAGE_COUNT
-      ? heroProducts.map((product) => ({
-          src: buildStoragePublicUrl(product.coverPath),
-          alt: product.coverAlt ?? product.name,
-          href: `/tienda/${product.slug}`,
-        }))
-      : fallbackImages;
-  const categoryGroups = groupByCategory(products).filter(
-    (group) => group.products.length > 0 && group.category.slug !== "regalos-personalizados",
-  );
-  const featured = products.slice(0, FEATURED_COUNT);
+  const products = await getCatalogProductsSafe();
+  const photos = planHomePhotos(products);
+  const faqs = FAQS.filter((faq) => HOME_FAQ_QUESTIONS.includes(faq.question));
+  const listed = [...photos.recent, ...photos.hero];
 
   return (
-    <main>
+    <main className="home" id="contenido">
       <JsonLd
         data={[
-          faqJsonLd(FAQS),
-          ...(featured.length
+          faqJsonLd(faqs),
+          ...(listed.length
             ? [
                 collectionPageJsonLd({
                   name: "Crochet hecho a mano en Honduras",
                   description: SITE_DESCRIPTION,
                   path: "/",
-                  items: featured.map((product) => ({
-                    name: product.name,
+                  items: listed.map((product) => ({
+                    name: displayProductName(product.name),
                     path: `/tienda/${product.slug}`,
                     image: buildStoragePublicUrl(product.coverPath) || undefined,
                   })),
@@ -167,311 +122,322 @@ export default async function Home() {
         ]}
       />
 
-      {/* ─── HERO ─── */}
-      <section id="inicio" className="relative overflow-hidden">
-        <YarnBall className="absolute -right-10 -top-10 hidden h-40 w-40 animate-spin-slow text-primary lg:block" />
-
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-10 lg:py-20">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:gap-16">
-            {/* Text side */}
-            <div className="animate-fade-in-up space-y-6 lg:w-1/2 lg:space-y-8">
-              <span className="inline-block rounded-full border border-primary/30 bg-primary/20 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary-dark">
-                Crochet hecho a mano en Honduras
-              </span>
-              <h1 className="font-display text-4xl font-black leading-[1.08] tracking-tight text-foreground sm:text-5xl lg:text-6xl xl:text-7xl">
-                Amigurumis y tejidos de crochet{" "}
-                <span className="relative inline-block">
-                  <span className="relative z-10">personalizados</span>
-                  <span className="absolute bottom-1 left-0 h-3 w-full -skew-x-3 rounded-sm bg-primary/30 lg:h-4" />
-                </span>
-              </h1>
-              <p className="max-w-lg text-base font-medium leading-relaxed text-foreground-light lg:text-lg">
-                Regalos únicos y eternos tejidos a mano en Honduras: amigurumis, flores, bolsos y piezas a la medida
-                de tu idea. Cada punto cuenta una historia diferente pensada especialmente para vos.
-              </p>
-              <div className="flex flex-col gap-4 pt-2 sm:flex-row">
-                <a
-                  href={SOCIAL_LINKS.whatsapp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-3 rounded-full bg-primary px-8 py-4 text-base font-bold text-foreground shadow-xl shadow-primary/25 transition-all hover:bg-primary-dark hover:text-white hover:shadow-primary-dark/30 active:scale-95"
-                >
-                  <SocialIcon network="whatsapp" />
-                  Pedí por WhatsApp
-                </a>
-                <Link
-                  href="/tienda"
-                  className="flex items-center justify-center gap-2 rounded-full border-2 border-primary/40 px-8 py-4 text-base font-bold text-foreground transition-all hover:bg-primary/10"
-                >
-                  Ver productos →
-                </Link>
-              </div>
-            </div>
-
-            {/* Catalog collage */}
-            <div className="mt-10 animate-fade-in-up delay-200 lg:mt-0 lg:w-1/2">
-              <div className="grid aspect-square grid-cols-3 grid-rows-3 gap-3 lg:gap-4">
-                {heroImages.map((image, index) => (
-                  <Link
-                    key={`${image.src}-${index}`}
-                    href={image.href}
-                    className={`group relative overflow-hidden rounded-2xl bg-primary/10 shadow-lg shadow-primary/10 lg:rounded-3xl ${collageCells[index]}`}
-                  >
-                    <Image
-                      src={image.src}
-                      alt={image.alt}
-                      fill
-                      sizes={index === 0 ? "(min-width: 1024px) 33vw, 66vw" : "(min-width: 1024px) 17vw, 33vw"}
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                      priority={index === 0}
-                    />
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── CATEGORIES ─── */}
-      {categoryGroups.length > 0 ? (
-        <section className="py-16 lg:py-24">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-            <div className="mb-8 flex items-end justify-between lg:mb-12">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-primary-dark">Tienda</span>
-                <h2 className="mt-2 font-display text-3xl font-bold text-foreground lg:text-4xl">Explorá por categoría</h2>
-              </div>
-              <Link href="/tienda" className="text-sm font-bold text-primary-dark underline-offset-4 hover:underline">
-                Ver todo →
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
-              {categoryGroups.map(({ category, products: items }) => {
-                const cover = items.find((item) => item.coverPath);
-
-                return (
-                  <Link
-                    key={category.slug}
-                    href={categoryHref(category)}
-                    className="group relative aspect-[4/5] overflow-hidden rounded-2xl bg-primary/10 shadow-sm transition-all duration-500 hover:shadow-xl hover:shadow-primary/10 lg:rounded-3xl"
-                  >
-                    {cover ? (
-                      <Image
-                        src={buildStoragePublicUrl(cover.coverPath)}
-                        alt={`${category.name}: crochet hecho a mano en Honduras`}
-                        fill
-                        sizes="(min-width: 1024px) 25vw, 50vw"
-                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                      />
-                    ) : null}
-                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/75 via-foreground/10 to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4 lg:bottom-6 lg:left-6 lg:right-6">
-                      <h3 className="font-display text-2xl text-white lg:text-4xl">{category.name}</h3>
-                      <p className="mt-1 text-xs font-bold uppercase tracking-[0.2em] text-white/75">
-                        {items.length} pieza{items.length === 1 ? "" : "s"} →
-                      </p>
-                    </div>
-                  </Link>
-                );
-              })}
-              <a
-                href={buildWhatsappUrl("¡Hola Crochet CasRey! Me gustaría pedir una pieza personalizada 🧶")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex aspect-[4/5] flex-col justify-end rounded-2xl border-2 border-dashed border-primary/40 bg-primary/10 p-4 transition-all duration-500 hover:bg-primary/20 lg:rounded-3xl lg:p-6"
-              >
-                <span className="font-display text-2xl text-foreground lg:text-4xl">Regalos personalizados</span>
-                <span className="mt-1 text-xs font-bold uppercase tracking-[0.2em] text-primary-dark">
-                  Pedí el tuyo por WhatsApp →
-                </span>
-              </a>
-            </div>
-          </div>
-        </section>
-      ) : null}
-
-      {/* ─── FEATURED ─── */}
-      {featured.length > 0 ? (
-        <section className="py-12 lg:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-            <div className="mb-8 lg:mb-12">
-              <span className="text-xs font-bold uppercase tracking-widest text-primary-dark">Recién tejidos</span>
-              <h2 className="mt-2 font-display text-3xl font-bold text-foreground lg:text-4xl">Nuestras creaciones</h2>
-            </div>
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
-              {featured.map((product) => (
-                <ProductCard key={product.id} product={product} />
+      {/* ─── 1 · INICIO: the catalog as a wall, the words in a solid box ─── */}
+      <section className="hero hero--photo" id="inicio" aria-labelledby="inicio-h">
+        {photos.hero.length ? (
+          <>
+            <div className="hero__wall" aria-hidden="true">
+              {heroColumns(photos.hero).map((column, col) => (
+                <div key={col} className="hero__col" style={{ "--col": col } as React.CSSProperties}>
+                  {/* Each column holds its photographs twice and slides by one set, so the loop has no seam. */}
+                  <div className="hero__reel">
+                    {[...column, ...column].map((product, index) => (
+                      <div key={`${product.id}-${index}`} className="hero__tile">
+                        <Image
+                          src={productPhoto(product).src}
+                          alt=""
+                          fill
+                          sizes="(min-width: 1024px) 15vw, (min-width: 640px) 20vw, 34vw"
+                          priority={col < 2 && index < HERO_PRIORITY_ROWS}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
-            <div className="mt-8 flex justify-center lg:mt-10">
-              <Link
-                href="/tienda"
-                className="rounded-full border border-primary/30 bg-surface px-7 py-3 text-sm font-bold text-foreground transition hover:bg-primary/10"
+            <WallPause />
+          </>
+        ) : null}
+        <div className="wrap hero__inner">
+          <div className="hero-text">
+            <div className="hero__text">
+            <h1 id="inicio-h" className="t-h1 hero__h1">
+              Crochet hecho a mano en Honduras
+            </h1>
+            <p className="t-lead hero__lead">
+              Amigurumis, flores, bolsos y ropa de bebé tejidos punto a punto. Elegí entre las {products.length || "50"}{" "}
+              piezas de la tienda o mandanos una foto de tu idea.
+            </p>
+            <div className="btn-row">
+              <a
+                href={SOCIAL_LINKS.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn--primary"
+                data-main-cta
               >
-                Ver toda la tienda
+                <SocialIcon network="whatsapp" className="btn__icon" />
+                {MAIN_ACTION_LABEL}
+              </a>
+              <Link href="/tienda" className="btn btn--secondary">
+                Ver la tienda
               </Link>
             </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 2 · CATEGORÍAS: the shop as sections, each with its photograph ─── */}
+      {photos.categories.length ? (
+        <section className="section" id="categorias" aria-labelledby="categorias-h">
+          <div className="wrap section__wrap">
+            <div className="section-head">
+              <div>
+                <h2 id="categorias-h" className="t-h2">
+                  Amigurumis, flores, bolsos y ropa de bebé
+                </h2>
+                <p className="t-lead">Cada categoría tiene su página con las fotos de todas sus piezas.</p>
+              </div>
+            </div>
+            <ul className="cats fill">
+              {photos.categories.map(({ group, cover }) => (
+                <li key={group.category.slug}>
+                  <Link href={categoryHref(group.category)} className="card cat">
+                    <span className="card__media">
+                      <Image
+                        src={buildStoragePublicUrl(cover.coverPath)}
+                        alt={`${group.category.name} de crochet: ${displayProductName(cover.name)}`}
+                        fill
+                        sizes="(min-width: 1024px) 34vw, 60vw"
+                        className="frame__img"
+                      />
+                    </span>
+                    <span className="card__body">
+                      <span className="card__title">{group.category.name}</span>
+                      <span className="card__meta">{piezas(group.products.length)}</span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+              {photos.all ? (
+                <li>
+                  <Link href="/tienda" className="card cat">
+                    <span className="card__media">
+                      <Image
+                        src={buildStoragePublicUrl(photos.all.coverPath)}
+                        alt={`${displayProductName(photos.all.name)}, crochet hecho a mano`}
+                        fill
+                        sizes="(min-width: 1024px) 34vw, 60vw"
+                        className="frame__img"
+                      />
+                    </span>
+                    <span className="card__body">
+                      <span className="card__title">Toda la tienda</span>
+                      <span className="card__meta">{piezas(products.length)}</span>
+                    </span>
+                  </Link>
+                </li>
+              ) : null}
+            </ul>
           </div>
         </section>
       ) : null}
 
-      {/* ─── HOW TO ORDER ─── */}
-      <section id="como-pedir" className="relative scroll-mt-20 overflow-hidden py-16 lg:py-24">
-        <div className="absolute inset-0 mx-4 rounded-[3rem] bg-gradient-to-b from-primary/5 via-primary/8 to-primary/5 lg:mx-0" />
-        <YarnBall className="absolute -bottom-16 -left-16 hidden h-48 w-48 text-primary opacity-30 lg:block" />
+      {/* ─── 3 · RECIÉN TEJIDAS ─── */}
+      {photos.recent.length ? (
+        <section className="section" id="recien" aria-labelledby="recien-h">
+          <div className="wrap section__wrap">
+            <div className="section-head">
+              <h2 id="recien-h" className="t-h2">
+                4 piezas recién tejidas
+              </h2>
+              <p className="t-lead">Lo último que salió del taller, listo para pedir igual o con tus colores.</p>
+            </div>
+            <ul className="picks fill">
+              {photos.recent.map((product) => {
+                const photo = productPhoto(product);
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-          <div className="mb-10 text-center lg:mb-16">
-            <span className="text-xs font-bold uppercase tracking-widest text-primary-dark">Proceso</span>
-            <h2 className="mt-2 font-display text-3xl font-bold text-foreground lg:text-4xl">Cómo hacer tu pedido</h2>
+                return (
+                  <li key={product.id}>
+                    <Link href={photo.href} className="card pick">
+                      <ViewTransition name={productTransitionName(product.id)} share="morph" default="none">
+                        <span className="card__media">
+                          <Image
+                            src={photo.src}
+                            alt={photo.alt}
+                            fill
+                            sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 60vw"
+                            className="frame__img"
+                          />
+                        </span>
+                      </ViewTransition>
+                      <span className="card__body">
+                        <span className="card__title">{displayProductName(product.name)}</span>
+                        <span className="card__meta">{product.category.name}</span>
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
+        </section>
+      ) : null}
 
-          <div className="flex flex-col gap-6 lg:flex-row lg:gap-10">
-            {steps.map((step, i) => (
-              <div
-                key={step.num}
-                className="relative flex-1 animate-fade-in-up rounded-2xl border border-primary/15 bg-surface/80 p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 lg:rounded-3xl lg:p-8"
-                style={{ animationDelay: `${(i + 1) * 200}ms` }}
-              >
-                <div className="mb-4 flex items-center gap-4">
-                  <span className="font-display text-5xl font-black leading-none text-primary/25 lg:text-6xl">{step.num}</span>
-                  <div className="h-px flex-1 bg-gradient-to-r from-primary/30 to-transparent" />
-                </div>
-                <h3 className="mb-2 text-lg font-bold text-foreground lg:text-xl">{step.title}</h3>
-                <p className="text-sm font-medium leading-relaxed text-foreground-light lg:text-base">{step.desc}</p>
-              </div>
-            ))}
+      {/* ─── 4 · CÓMO PEDIR: the page's one split ─── */}
+      <section className="section" id="como-pedir" aria-labelledby="como-pedir-h">
+        <div className="wrap section__wrap split">
+          <div className="split__text">
+            <div className="section-head">
+              <h2 id="como-pedir-h" className="t-h2">
+                Pedidos por WhatsApp en 3 pasos
+              </h2>
+              <p className="t-lead">Todo se coordina por WhatsApp, directo con nosotras, sin formularios ni cuentas.</p>
+            </div>
+            <ol className="steps">
+              {STEPS.map((step, index) => (
+                <li key={step.title}>
+                  <span className="steps__n" aria-hidden="true">
+                    {index + 1}
+                  </span>
+                  <div>
+                    <p className="steps__title">{step.title}</p>
+                    <p>{step.desc}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
+          {photos.howToOrder ? (
+            <Link href={productPhoto(photos.howToOrder).href} className="split__photo m-zoom">
+              <Image
+                src={productPhoto(photos.howToOrder).src}
+                alt={productPhoto(photos.howToOrder).alt}
+                fill
+                sizes="(min-width: 1024px) 45vw, 100vw"
+              />
+            </Link>
+          ) : null}
+        </div>
+      </section>
 
-          <div className="mt-10 flex justify-center">
+      {/* ─── 5 · PERSONALIZADOS: the brand band, three photographs ─── */}
+      <section className="section ground-brand" id="personalizados" aria-labelledby="personalizados-h">
+        <div className="wrap section__wrap">
+          <div className="section-head section-head--row">
+            <div>
+              <h2 id="personalizados-h" className="t-h2">
+                Crochet personalizado a partir de tu foto
+              </h2>
+              <p className="t-lead">
+                Una muñeca con la ropa de tu hija, tu mascota en amigurumi o un ramo con sus colores favoritos.
+              </p>
+            </div>
             <a
-              href={SOCIAL_LINKS.whatsapp}
+              href={buildWhatsappUrl(CUSTOM_ORDER_MESSAGE)}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 rounded-full bg-primary px-8 py-4 text-base font-bold text-foreground shadow-xl shadow-primary/25 transition-all hover:bg-primary-dark hover:text-white active:scale-95"
+              className="btn btn--secondary"
             >
-              <SocialIcon network="whatsapp" />
-              Empezar mi pedido
+              Enviar mi idea por WhatsApp
             </a>
           </div>
+          {photos.custom.length ? (
+            <ul className="trio fill">
+              {photos.custom.map((product) => {
+                const photo = productPhoto(product);
+
+                return (
+                  <li key={product.id}>
+                    <Link href={photo.href} className="trio__photo m-zoom">
+                      <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 1024px) 34vw, 70vw" />
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : null}
         </div>
       </section>
 
-      {/* ─── TESTIMONIAL / HIGHLIGHT ─── */}
-      <section className="py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-          <div className="relative overflow-hidden rounded-3xl bg-background-dark p-8 lg:rounded-[3rem] lg:p-16">
-            <div className="absolute right-0 top-0 h-64 w-64 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
-            <div className="absolute bottom-0 left-0 h-48 w-48 -translate-x-1/2 translate-y-1/2 rounded-full bg-primary/15 blur-2xl" />
-
-            <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:gap-16">
-              <div className="space-y-6 lg:w-1/2">
-                <span className="inline-block rounded-full bg-primary/20 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary">
-                  Lo que dicen
-                </span>
-                <blockquote className="font-display text-2xl font-bold leading-snug text-white lg:text-4xl">
-                  &ldquo;Le regalé un amigurumi personalizado a mi hija y fue el regalo más especial que recibió. ¡La
-                  calidad es increíble!&rdquo;
-                </blockquote>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/30 text-sm font-bold text-primary">
-                    MC
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-white">María C.</p>
-                    <p className="text-xs text-white/50">Cliente feliz</p>
-                  </div>
-                </div>
-              </div>
-              <div className="flex gap-4 lg:w-1/2">
-                {heroImages.slice(1, 3).map((image, index) => (
-                  <div
-                    key={`${image.src}-${index}`}
-                    className={`relative aspect-[3/4] flex-1 overflow-hidden rounded-2xl ${index === 1 ? "translate-y-8" : ""}`}
-                  >
-                    <Image src={image.src} alt={image.alt} fill sizes="(min-width: 1024px) 25vw, 50vw" className="object-cover" />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── FAQ ─── */}
-      <section id="preguntas-frecuentes" className="scroll-mt-20 py-16 lg:py-24">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-10">
-          <div className="mb-10 text-center lg:mb-14">
-            <span className="text-xs font-bold uppercase tracking-widest text-primary-dark">Preguntas frecuentes</span>
-            <h2 className="mt-2 font-display text-3xl font-bold text-foreground lg:text-4xl">
-              Todo sobre tu pedido de crochet
+      {/* ─── 6 · PATRONES Y APRENDE ─── */}
+      <section className="section" id="aprende" aria-labelledby="aprende-h">
+        <div className="wrap section__wrap">
+          <div className="section-head">
+            <h2 id="aprende-h" className="t-h2">
+              Patrones y clases de crochet
             </h2>
+            <p className="t-lead">Para quien quiere tejer sus propias piezas en casa, desde el primer punto.</p>
           </div>
-
-          <div className="space-y-3">
-            {FAQS.map((faq, index) => (
-              <details
-                key={faq.question}
-                open={index === 0}
-                className="group rounded-2xl border border-primary/15 bg-surface/80 p-5 transition-colors open:border-primary/40 open:bg-surface lg:rounded-3xl lg:p-6"
-              >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-base font-bold text-foreground lg:text-lg [&::-webkit-details-marker]:hidden">
-                  <h3>{faq.question}</h3>
-                  <span
-                    aria-hidden="true"
-                    className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary-dark transition-transform group-open:rotate-45"
-                  >
-                    +
-                  </span>
-                </summary>
-                <p className="mt-3 text-sm font-medium leading-relaxed text-foreground-light lg:text-base">{faq.answer}</p>
-              </details>
+          <div className="hubs fill">
+            {[
+              {
+                title: "Biblioteca de patrones",
+                href: "/patrones",
+                photo: photos.patterns,
+                links: PATTERN_SECTIONS.map((section) => ({ label: section.title, href: `/patrones#${section.id}` })),
+              },
+              {
+                title: "Aprende crochet",
+                href: "/aprende",
+                photo: photos.learn,
+                links: LEARN_SECTIONS.map((section) => ({ label: section.title, href: `/aprende#${section.id}` })),
+              },
+            ].map((hub) => (
+              <article key={hub.href} className="card hub m-nolift">
+                {hub.photo ? (
+                  <Link href={hub.href} className="card__media m-zoom" tabIndex={-1} aria-hidden="true">
+                    <Image
+                      src={buildStoragePublicUrl(hub.photo.coverPath)}
+                      alt=""
+                      fill
+                      sizes="(min-width: 1024px) 45vw, 100vw"
+                    />
+                  </Link>
+                ) : null}
+                <div className="hub__body">
+                  <h3 className="t-h3">
+                    <Link href={hub.href} className="hub__title">
+                      {hub.title}
+                    </Link>
+                  </h3>
+                  <ul className="hub__links">
+                    {hub.links.map((link) => (
+                      <li key={link.href}>
+                        <Link href={link.href} className="link">
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ─── CONTACT ─── */}
-      <section id="contacto" className="scroll-mt-20 py-16 lg:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
-          <div className="mx-auto mb-10 max-w-2xl space-y-4 text-center lg:mb-14">
-            <span className="text-xs font-bold uppercase tracking-widest text-primary-dark">Contacto</span>
-            <h2 className="font-display text-3xl font-bold text-foreground lg:text-5xl">¿Tenés una idea en mente?</h2>
-            <p className="text-base font-medium text-foreground-light lg:text-lg">
-              Dale vida con hilo y aguja. Contame qué te gustaría y lo hacemos realidad juntos.
-            </p>
+      {/* ─── 7 · PREGUNTAS FRECUENTES: every answer open ─── */}
+      <section className="section" id="preguntas-frecuentes" aria-labelledby="preguntas-h">
+        <div className="wrap section__wrap split split--faq">
+          <div className="faq__side">
+            <div className="section-head">
+              <h2 id="preguntas-h" className="t-h2">
+                Preguntas frecuentes
+              </h2>
+              <p className="t-lead">Si tu duda no está acá, escribinos por WhatsApp y te respondemos.</p>
+            </div>
+            {photos.faq ? (
+              <Link href={productPhoto(photos.faq).href} className="faq__photo m-zoom">
+                <Image
+                  src={productPhoto(photos.faq).src}
+                  alt={productPhoto(photos.faq).alt}
+                  fill
+                  sizes="(min-width: 1024px) 40vw, 90vw"
+                />
+              </Link>
+            ) : null}
           </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
-            {contactNetworks.map(({ network, cta }) => (
-              <a
-                key={network}
-                href={SOCIAL_LINKS[network]}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`group flex items-center gap-4 rounded-2xl border p-5 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 lg:flex-col lg:items-start lg:rounded-3xl lg:p-7 ${
-                  network === "whatsapp" ? "border-primary/40 bg-primary/15" : "border-primary/15 bg-surface"
-                }`}
-              >
-                <span
-                  className={`flex size-12 shrink-0 items-center justify-center rounded-full ${
-                    network === "whatsapp" ? "bg-[#25D366] text-white" : "bg-primary/20 text-foreground"
-                  }`}
-                >
-                  <SocialIcon network={network} className="h-6 w-6" />
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-lg font-bold text-foreground">{SOCIAL_LABELS[network].name}</span>
-                  <span className="block truncate text-sm text-foreground-light">{SOCIAL_LABELS[network].handle}</span>
-                  <span className="mt-2 hidden text-sm font-bold text-primary-dark transition group-hover:translate-x-1 lg:inline-block">
-                    {cta} →
-                  </span>
-                </span>
-              </a>
+          <dl className="faq">
+            {faqs.map((faq, index) => (
+              <div key={faq.question} className={index === 3 ? "faq__extra" : undefined}>
+                <dt>{faq.question}</dt>
+                <dd>{faq.answer}</dd>
+              </div>
             ))}
-          </div>
+          </dl>
         </div>
       </section>
     </main>
