@@ -68,11 +68,13 @@ const STEPS = [
   },
 ];
 
-// The hero wall: 7 columns of 3 photographs at 1440 (fewer columns on narrower screens, see globals.css).
-// Column 0 sits on the right, where the words never cover it. A short catalog repeats its photographs
-// so every column still holds a full set.
+// The hero wall: 7 columns at 1440 (fewer columns on narrower screens, see globals.css), 3 rows tall on
+// desktop and 4 under 1024px. Each column holds HERO_ROWS photographs, at least as many as the rows on
+// screen, so its loop never shows a gap. Column 0 sits on the right, where the words never cover it.
+// A short catalog repeats its photographs so every column still holds a full set.
 const HERO_COLUMNS = 7;
-const HERO_ROWS = 3;
+const HERO_ROWS = 4;
+const HERO_PRIORITY_ROWS = 3;
 
 function heroColumns(products: CatalogProduct[]) {
   return Array.from({ length: HERO_COLUMNS }, (_, col) =>
@@ -136,7 +138,7 @@ export default async function Home() {
                           alt=""
                           fill
                           sizes="(min-width: 1024px) 15vw, (min-width: 640px) 20vw, 34vw"
-                          priority={col < 2 && index < HERO_ROWS}
+                          priority={col < 2 && index < HERO_PRIORITY_ROWS}
                         />
                       </div>
                     ))}

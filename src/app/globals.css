@@ -949,33 +949,30 @@ body > main:not(.home) {
     width: calc(58.33% - var(--gutter) / 2);
   }
 }
+/* Under 1024px the wall still fills the whole hero, as on desktop, 4 rows tall; the words sit in a solid
+   card at its foot, and at least 26svh of wall always shows above the card. */
 @media (max-width: 1023px) {
   .home > .hero {
-    --photo: min(50svh, 70vw);
-    padding-top: calc(var(--nav) + var(--photo) + var(--hgap));
-    background: var(--bg);
+    height: auto;
+    min-height: 100svh;
+    padding-top: calc(var(--nav) + 26svh);
   }
   .hero__wall {
-    --rows: 2;
-    --tile: calc(var(--photo) / var(--rows));
-    bottom: auto;
-    height: var(--photo);
+    --rows: 4;
   }
   .hero__col:nth-child(n + 6) {
     display: none;
   }
   .wall-pause {
-    top: calc(var(--nav) + var(--photo) - 44px);
+    top: calc(var(--nav) + 12px);
     bottom: auto;
   }
   .hero-text {
-    justify-content: flex-start;
+    justify-content: flex-end;
   }
   .hero__text {
-    width: 100%;
-    padding: 0;
-    border-radius: 0;
-    background: none;
+    width: min(100%, 600px);
+    padding: var(--s-6);
   }
   .hero__h1 {
     max-width: 18ch;
@@ -983,20 +980,23 @@ body > main:not(.home) {
 }
 @media (max-width: 639px) {
   .home > .hero {
-    --photo: 34svh;
-    --hgap: 24px;
+    --hpadb: 12px;
+  }
+  .hero__inner {
+    width: calc(100% - 2 * var(--s-3));
   }
   .hero__col:nth-child(n + 4) {
     display: none;
   }
   .hero__h1 {
-    font-size: 40px;
+    font-size: 36px;
   }
   .hero__lead {
     font-size: 17px;
   }
   .hero__text {
     gap: var(--s-4);
+    padding: var(--s-5);
   }
 }
 
@@ -1029,6 +1029,25 @@ body > main:not(.home) {
   .cats {
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, minmax(0, 1fr));
+  }
+  /* Two columns leave a short tile, so the photograph fills all of it and the name sits on a dark
+     scrim at its foot: a long name ("Bolsos y carteras") wraps without shrinking the photograph. */
+  .cat {
+    justify-content: flex-end;
+    border: 0;
+  }
+  .cat .card__media {
+    position: absolute;
+    inset: 0;
+  }
+  .cat .card__body {
+    position: relative;
+    padding-top: var(--s-7);
+    background: linear-gradient(to top, rgb(43 29 34 / 0.82), rgb(43 29 34 / 0.45) 55%, transparent);
+    color: #fff;
+  }
+  .cat .card__meta {
+    color: rgb(255 255 255 / 0.82);
   }
 }
 
