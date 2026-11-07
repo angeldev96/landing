@@ -158,7 +158,13 @@ export default async function Home() {
               piezas de la tienda o mandanos una foto de tu idea.
             </p>
             <div className="btn-row">
-              <a href={SOCIAL_LINKS.whatsapp} target="_blank" rel="noopener noreferrer" className="btn btn--primary">
+              <a
+                href={SOCIAL_LINKS.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn--primary"
+                data-main-cta
+              >
                 <SocialIcon network="whatsapp" className="btn__icon" />
                 {MAIN_ACTION_LABEL}
               </a>

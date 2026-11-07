@@ -47,6 +47,7 @@ export function SiteFooter() {
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn--primary btn--xl"
+            data-main-cta
           >
             {MAIN_ACTION_LABEL}
             <SocialIcon network="whatsapp" className="btn__icon" />
